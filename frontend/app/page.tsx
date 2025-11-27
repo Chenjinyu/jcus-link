@@ -4,7 +4,7 @@ import { MODEL_CONFIG } from "@/app/configs/config";
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 
-export default function Chat() {
+export default function Page() {
   const [input, setInput] = useState('');
   // llama3 as the default model
   const [selectedModel, setSelectedModel] = useState('llama3.1:8b'); 

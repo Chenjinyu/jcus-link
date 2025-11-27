@@ -25,9 +25,9 @@ import {
 
 import {  useToast } from "../hooks/useToast";
 import { v4 as uuidv4 } from "uuid";
-import { useQueryState } from "nuqs";
-
 import { ModelOptions } from "../types";
+import { useQueryState } from "nuqs";
+import { useThreads } from "../hooks/useThreads";
 import { useRuns } from "../hooks/useRuns";
 import { useUser } from "../hooks/useUser";
 import { messageContentToText } from "../utils/convert_messages";
@@ -51,3 +51,20 @@ interface ChatWindowData {
 }
 
 type UserDataContextType = ReturnType<typeof useUser>;
+type ThreadsDataContextType = ReturnType<typeof useThreads>;
+
+type ChatWindowType = {
+    userData: UserDataContextType;
+    threadsData: ThreadsDataContextType;
+}
+const ChatWindowContext = createContext<ChatWindowType | undefined>(undefined);
+
+export function useChatWindowContext() { 
+    const context = useContext(ChatWindowContext);
+    if (context === undefined) {
+        throw new Error(
+            "useChatWindowContext must be used within a ChatWindowProvider",
+        );
+    }
+    return context;
+}
