@@ -18,23 +18,24 @@ import {
   PromptInputSpeechButton,
   PromptInputSubmit,
   PromptInputTextarea,
+  PromptInputHeader,
   PromptInputFooter,
   PromptInputTools,
-} from '@/app/components/ui/ai-elements/prompt-input';
+} from '@/components/ai-elements/prompt-input'; 
 import { GlobeIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from '@/app/components/ui/ai-elements/conversation';
-import { Message, MessageContent, MessageResponse } from '@/app/components/ui/ai-elements/message';
+} from '@/components/ai-elements/conversation';
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
 const models = [
   { id: 'gpt-4o', name: 'GPT-4o' },
   { id: 'claude-opus-4-20250514', name: 'Claude 4 Opus' },
 ];
-const ChatInput = () => {
+const ChatInputWindowComponent = () => {
   const [text, setText] = useState<string>('');
   const [model, setModel] = useState<string>(models[0].id);
   const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
@@ -144,4 +145,4 @@ const ChatInput = () => {
     </div>
   );
 };
-export default ChatInput;
+export const ChatInputWindow = React.memo(ChatInputWindowComponent);
