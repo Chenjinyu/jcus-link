@@ -31,6 +31,8 @@ import {
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
+import { useTheme, THEME_STYLES } from '@/app/context/ThemeContext';
+
 
 const models = [
   { id: 'gpt-4o', name: 'GPT-4o' },
@@ -43,6 +45,9 @@ const ChatInputWindowComponent = () => {
   const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { messages, status, sendMessage } = useChat();
+
+  const { theme } = useTheme();
+  const themeStyle = THEME_STYLES[theme];
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -68,7 +73,14 @@ const ChatInputWindowComponent = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col rounded-lg border bg-white">
+    <div 
+    className="w-full h-full flex flex-col rounded-lg border bg-white"
+    style={{ 
+        backgroundColor: themeStyle.backgroundColor,
+        borderColor: themeStyle.navbarBorder,
+        color: themeStyle.color,
+      }}
+    >
       <Conversation className="flex-1">
         <ConversationContent>
           {messages.map((message) => (

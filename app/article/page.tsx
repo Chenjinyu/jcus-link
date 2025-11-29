@@ -36,18 +36,18 @@ export default function ArticlePage() {
           {articles.map((article) => (
             <article
               key={article.id}
-              className="p-6 border rounded-lg hover:shadow-lg transition-shadow cursor-pointer"
+              className="p-6 border border-current border-opacity-20 rounded-lg hover:shadow-lg transition-shadow cursor-pointer"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
                   {article.category}
                 </span>
-                <span className="text-sm text-gray-500">{article.date}</span>
+                <span className="text-sm opacity-70">{article.date}</span>
               </div>
               <h2 className="text-2xl font-semibold mb-2 hover:text-blue-600">
                 {article.title}
               </h2>
-              <p className="text-gray-600 mb-4">
+              <p className="opacity-70 mb-4">
                 {article.excerpt}
               </p>
               <button className="text-blue-600 hover:underline text-sm font-medium">

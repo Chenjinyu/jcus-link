@@ -34,7 +34,7 @@ export default function NavigationBar() {
         <div className="mr-8 flex items-center">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-bold" style={{ color: themeStyle.navbarText }}>
-              JCUS.link
+              JCUS.LINK
             </span>
           </Link>
         </div>

@@ -2,11 +2,10 @@
 
 import React from "react";
 import { ChatInputWindow } from '@/app/customs/chat-interface/chat-input-window';
-import ThemedPageWrapper from '@/app/customs/theme/ThemedPageWrapper';
 
 export default function ChatPage() {
   return (
-    <ThemedPageWrapper className="flex flex-col">
+    <div className="w-full h-full flex flex-col">
       <div className="flex-1 px-6 overflow-hidden" style={{ 
         paddingTop: '20px',
         paddingBottom: '20px',
@@ -18,6 +17,6 @@ export default function ChatPage() {
           </React.Suspense>
         </div>
       </div>
-    </ThemedPageWrapper>
+    </div>
   );
 }
