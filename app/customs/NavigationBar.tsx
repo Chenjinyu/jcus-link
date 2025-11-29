@@ -4,11 +4,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeColorPicker from './theme/ThemeColorPicker';
+import ThemeColorPicker from '@/app/customs/theme/ThemeColorPicker';
 import LoginDropdown from './LoginDropdown';
 import { useTheme, THEME_STYLES } from '@/app/context/ThemeContext';
 
-export default function NavigationBar() {
+export default function Navbar() {
   const pathname = usePathname();
   const { theme } = useTheme();
   const themeStyle = THEME_STYLES[theme];
@@ -22,7 +22,7 @@ export default function NavigationBar() {
 
   return (
     <header 
-      className="sticky top-0 z-50 w-full border-b backdrop-blur"
+      className="sticky top-0 z-50 w-full border-b-4 backdrop-blur"
       style={{ 
         backgroundColor: themeStyle.navbarBg,
         borderColor: themeStyle.navbarBorder,
