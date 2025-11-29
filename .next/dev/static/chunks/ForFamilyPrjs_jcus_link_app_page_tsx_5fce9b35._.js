@@ -4,305 +4,164 @@
 
 __turbopack_context__.s([
     "default",
-    ()=>__TURBOPACK__default__export__
+    ()=>Page
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ForFamilyPrjs/jcus.link/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-(()=>{
-    const e = new Error("Cannot find module '@/components/ai-elements/prompt-input'");
-    e.code = 'MODULE_NOT_FOUND';
-    throw e;
-})();
-var __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$globe$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__GlobeIcon$3e$__ = __turbopack_context__.i("[project]/ForFamilyPrjs/jcus.link/node_modules/lucide-react/dist/esm/icons/globe.js [app-client] (ecmascript) <export default as GlobeIcon>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ForFamilyPrjs/jcus.link/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f40$ai$2d$sdk$2f$react$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ForFamilyPrjs/jcus.link/node_modules/@ai-sdk/react/dist/index.mjs [app-client] (ecmascript)");
-(()=>{
-    const e = new Error("Cannot find module '@/components/ai-elements/conversation'");
-    e.code = 'MODULE_NOT_FOUND';
-    throw e;
-})();
-(()=>{
-    const e = new Error("Cannot find module '@/components/ai-elements/message'");
-    e.code = 'MODULE_NOT_FOUND';
-    throw e;
-})();
-;
-var _s = __turbopack_context__.k.signature();
+var __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/ForFamilyPrjs/jcus.link/node_modules/.pnpm/next@16.0.5_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 'use client';
 ;
-;
-;
-;
-;
-;
-const models = [
-    {
-        id: 'gpt-4o',
-        name: 'GPT-4o'
-    },
-    {
-        id: 'claude-opus-4-20250514',
-        name: 'Claude 4 Opus'
-    }
-];
-const InputDemo = ()=>{
-    _s();
-    const [text, setText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
-    const [model, setModel] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(models[0].id);
-    const [useWebSearch, setUseWebSearch] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const textareaRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const { messages, status, sendMessage } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f40$ai$2d$sdk$2f$react$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useChat"])();
-    const handleSubmit = (message)=>{
-        const hasText = Boolean(message.text);
-        const hasAttachments = Boolean(message.files?.length);
-        if (!(hasText || hasAttachments)) {
-            return;
-        }
-        sendMessage({
-            text: message.text || 'Sent with attachments',
-            files: message.files
-        }, {
-            body: {
-                model: model,
-                webSearch: useWebSearch
-            }
-        });
-        setText('');
-    };
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "max-w-4xl mx-auto p-6 relative size-full rounded-lg border h-[600px]",
-        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex flex-col h-full",
-            children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Conversation, {
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ConversationContent, {
-                            children: messages.map((message)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Message, {
-                                    from: message.role,
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MessageContent, {
-                                        children: message.parts.map((part, i)=>{
-                                            switch(part.type){
-                                                case 'text':
-                                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(MessageResponse, {
-                                                        children: part.text
-                                                    }, `${message.id}-${i}`, false, {
-                                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                        lineNumber: 76,
-                                                        columnNumber: 27
-                                                    }, ("TURBOPACK compile-time value", void 0));
-                                                default:
-                                                    return null;
-                                            }
-                                        })
+function Page() {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "w-full h-full overflow-auto py-5 px-6",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "max-w-7xl mx-auto",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "bg-white rounded-lg shadow-md p-8 border-2 border-gray-200",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                        className: "text-4xl font-bold mb-6 text-gray-900",
+                        children: "Welcome to JCUS.LINK"
+                    }, void 0, false, {
+                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                        lineNumber: 11,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        className: "text-gray-600 text-lg mb-4",
+                        children: "This is your home page. Add your content here."
+                    }, void 0, false, {
+                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                        lineNumber: 14,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-6 bg-gray-50 rounded-lg hover:shadow-md transition-shadow",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "font-semibold text-lg mb-2 text-blue-600",
+                                        children: "🏠 Home"
                                     }, void 0, false, {
                                         fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                        lineNumber: 71,
-                                        columnNumber: 17
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                }, message.id, false, {
-                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                    lineNumber: 70,
-                                    columnNumber: 15
-                                }, ("TURBOPACK compile-time value", void 0)))
-                        }, void 0, false, {
-                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                            lineNumber: 68,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ConversationScrollButton, {}, void 0, false, {
-                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                            lineNumber: 88,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0))
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                    lineNumber: 67,
-                    columnNumber: 9
-                }, ("TURBOPACK compile-time value", void 0)),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInput, {
-                    onSubmit: handleSubmit,
-                    className: "mt-4",
-                    globalDrop: true,
-                    multiple: true,
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputHeader, {
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputAttachments, {
-                                children: (attachment)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputAttachment, {
-                                        data: attachment
+                                        lineNumber: 20,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-600",
+                                        children: "Welcome to my personal website."
                                     }, void 0, false, {
                                         fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                        lineNumber: 93,
-                                        columnNumber: 32
-                                    }, ("TURBOPACK compile-time value", void 0))
-                            }, void 0, false, {
+                                        lineNumber: 23,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                lineNumber: 92,
+                                lineNumber: 19,
                                 columnNumber: 13
-                            }, ("TURBOPACK compile-time value", void 0))
-                        }, void 0, false, {
-                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                            lineNumber: 91,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputBody, {
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputTextarea, {
-                                onChange: (e)=>setText(e.target.value),
-                                ref: textareaRef,
-                                value: text
-                            }, void 0, false, {
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-6 bg-gray-50 rounded-lg hover:shadow-md transition-shadow",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "font-semibold text-lg mb-2 text-green-600",
+                                        children: "📝 Articles"
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 29,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-600",
+                                        children: "Read my latest articles and blog posts."
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 32,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                lineNumber: 98,
+                                lineNumber: 28,
                                 columnNumber: 13
-                            }, ("TURBOPACK compile-time value", void 0))
-                        }, void 0, false, {
-                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                            lineNumber: 96,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputFooter, {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputTools, {
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputActionMenu, {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputActionMenuTrigger, {}, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 107,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputActionMenuContent, {
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputActionAddAttachments, {}, void 0, false, {
-                                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                        lineNumber: 109,
-                                                        columnNumber: 19
-                                                    }, ("TURBOPACK compile-time value", void 0))
-                                                }, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 108,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0))
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                            lineNumber: 106,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSpeechButton, {
-                                            onTranscriptionChange: setText,
-                                            textareaRef: textareaRef
-                                        }, void 0, false, {
-                                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                            lineNumber: 112,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputButton, {
-                                            onClick: ()=>setUseWebSearch(!useWebSearch),
-                                            variant: useWebSearch ? 'default' : 'ghost',
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$globe$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__GlobeIcon$3e$__["GlobeIcon"], {
-                                                    size: 16
-                                                }, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 120,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    children: "Search"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 121,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0))
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                            lineNumber: 116,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSelect, {
-                                            onValueChange: (value)=>{
-                                                setModel(value);
-                                            },
-                                            value: model,
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSelectTrigger, {
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSelectValue, {}, void 0, false, {
-                                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                        lineNumber: 130,
-                                                        columnNumber: 19
-                                                    }, ("TURBOPACK compile-time value", void 0))
-                                                }, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 129,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSelectContent, {
-                                                    children: models.map((model)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSelectItem, {
-                                                            value: model.id,
-                                                            children: model.name
-                                                        }, model.id, false, {
-                                                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                            lineNumber: 134,
-                                                            columnNumber: 21
-                                                        }, ("TURBOPACK compile-time value", void 0)))
-                                                }, void 0, false, {
-                                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                                    lineNumber: 132,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0))
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                            lineNumber: 123,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0))
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                    lineNumber: 105,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0)),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PromptInputSubmit, {
-                                    disabled: !text && !status,
-                                    status: status
-                                }, void 0, false, {
-                                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                                    lineNumber: 141,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                            lineNumber: 104,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0))
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-                    lineNumber: 90,
-                    columnNumber: 9
-                }, ("TURBOPACK compile-time value", void 0))
-            ]
-        }, void 0, true, {
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-6 bg-gray-50 rounded-lg hover:shadow-md transition-shadow",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "font-semibold text-lg mb-2 text-purple-600",
+                                        children: "💬 Chat"
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 38,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-600",
+                                        children: "Chat with me using AI-powered interface."
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 41,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                lineNumber: 37,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-6 bg-gray-50 rounded-lg hover:shadow-md transition-shadow",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "font-semibold text-lg mb-2 text-orange-600",
+                                        children: "👤 About"
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 47,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$5_$40$babel$2b$core$40$7$2e$28$2e$5_$40$opentelemetry$2b$api$40$1$2e$9$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-600",
+                                        children: "Learn more about me and my work."
+                                    }, void 0, false, {
+                                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                        lineNumber: 50,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                                lineNumber: 46,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                        lineNumber: 18,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
+                lineNumber: 10,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
             fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-            lineNumber: 66,
+            lineNumber: 9,
             columnNumber: 7
-        }, ("TURBOPACK compile-time value", void 0))
+        }, this)
     }, void 0, false, {
         fileName: "[project]/ForFamilyPrjs/jcus.link/app/page.tsx",
-        lineNumber: 65,
+        lineNumber: 8,
         columnNumber: 5
-    }, ("TURBOPACK compile-time value", void 0));
-};
-_s(InputDemo, "rbNCFRSuuAUCDo437Gr8UH0Y6h8=", false, function() {
-    return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$ForFamilyPrjs$2f$jcus$2e$link$2f$node_modules$2f40$ai$2d$sdk$2f$react$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useChat"]
-    ];
-});
-_c = InputDemo;
-const __TURBOPACK__default__export__ = InputDemo;
+    }, this);
+}
+_c = Page;
 var _c;
-__turbopack_context__.k.register(_c, "InputDemo");
+__turbopack_context__.k.register(_c, "Page");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }

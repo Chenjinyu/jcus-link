@@ -1,5 +1,14 @@
 {
   "app": {
+    "[project]/ForFamilyPrjs/jcus.link/app/about/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/ForFamilyPrjs/jcus.link/app/article/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
+    "[project]/ForFamilyPrjs/jcus.link/app/chat/page": [
+      "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
+    ],
     "[project]/ForFamilyPrjs/jcus.link/app/page": [
       "static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2"
     ]

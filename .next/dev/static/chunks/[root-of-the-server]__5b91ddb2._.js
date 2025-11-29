@@ -465,7 +465,7 @@ function triggerUpdate(msg) {
 "[hmr-entry]/hmr-entry.js { ENTRY => \"[project]/ForFamilyPrjs/jcus.link/pages/_app\" }", ((__turbopack_context__) => {
 "use strict";
 
-__turbopack_context__.r("[next]/entry/page-loader.ts { PAGE => \"[project]/ForFamilyPrjs/jcus.link/node_modules/next/app.js [client] (ecmascript)\" } [client] (ecmascript)");
+__turbopack_context__.r("[next]/entry/page-loader.ts { PAGE => \"[project]/ForFamilyPrjs/jcus.link/node_modules/.pnpm/next@16.0.5_@babel+core@7.28.5_@opentelemetry+api@1.9.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next/app.js [client] (ecmascript)\" } [client] (ecmascript)");
 }),
 ]);
 
