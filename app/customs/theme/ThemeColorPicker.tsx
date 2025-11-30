@@ -1,4 +1,3 @@
-// frontend/app/components/ThemeColorPicker.tsx
 'use client';
 
 import React from 'react';
@@ -20,23 +19,35 @@ export default function ThemeColorPicker() {
     [Theme.DARK_BLUE]: 'Dark Blue',
     [Theme.LIGHT_ORANGE]: 'Light Orange',
     [Theme.LIGHT]: 'Light',
-
   };
 
   return (
     <div className="flex items-center gap-2">
-      <Palette className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-      <div className="flex bg-gray-200/20 p-1 rounded-full border border-gray-300 dark:border-white/10">
+      {/* Icon adjusts size responsively */}
+      <Palette className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" />
+
+      {/* Container grows on small screens */}
+      <div className="
+        flex p-1 rounded-full border
+        bg-gray-200/30 dark:bg-white/10 
+        border-gray-300 dark:border-white/10
+        gap-1
+      ">
         {(Object.keys(THEME_STYLES) as Theme[]).map((t) => (
           <button
             key={t}
             onClick={() => setTheme(t)}
-            className={`w-6 h-6 rounded-full mx-1 transition-transform hover:scale-110 border-2 ${
-              theme === t ? 'border-blue-500 scale-110' : 'border-transparent'
-            }`}
-            style={{ backgroundColor: themeColors[t] }}
             aria-label={`Switch to ${themeLabels[t]} theme`}
             title={themeLabels[t]}
+            className={`
+              rounded-full transition-transform
+              border-2 
+              ${theme === t ? 'scale-110 border-blue-500' : 'border-transparent'}
+              w-5 h-5 sm:w-6 sm:h-6
+            `}
+            style={{
+              backgroundColor: themeColors[t],
+            }}
           />
         ))}
       </div>
