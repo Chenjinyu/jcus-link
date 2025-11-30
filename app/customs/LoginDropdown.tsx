@@ -1,7 +1,7 @@
 // frontend/app/components/LoginDropdown.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User } from 'lucide-react';
 
 interface LoginDropdownProps {
@@ -14,6 +14,25 @@ export default function LoginDropdown({ navbarBg, navbarText, isDarkTheme = fals
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleGoogleLogin = () => {
     console.log('Google login clicked');
@@ -56,7 +75,7 @@ export default function LoginDropdown({ navbarBg, navbarText, isDarkTheme = fals
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={() => setHoveredButton('login-btn')}
@@ -85,7 +104,9 @@ export default function LoginDropdown({ navbarBg, navbarText, isDarkTheme = fals
           {/* Backdrop */}
           <div
             className="fixed inset-0 z-40"
-            onClick={() => setIsOpen(false)}
+            onClick={(e) => {
+                setIsOpen(false);
+            }}
           />
 
           {/* Dropdown */}
