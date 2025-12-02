@@ -1,4 +1,4 @@
-import { KnowledgeChunk, Theme } from '../types';
+import { KnowledgeChunk } from '../types';
 
 export const FALLBACK_MESSAGE = "I do not have the answer, but the author will be notified via email, who will add the related information to the web application.";
 
@@ -31,6 +31,15 @@ export const KNOWLEDGE_BASE: KnowledgeChunk[] = [
   }
 ];
 
+// the type of Theme and const of THEME_STYLES are not be used so far. 
+// will delete them soon.
+export enum Theme {
+  LIGHT = 'light',
+  DARK_BLUE = 'darkBlue',
+  BLACK = 'Black',
+  LIGHT_ORANGE = 'lightOrange',
+}
+
 export const THEME_STYLES: Record<Theme, { bg: string; text: string; input: string; botBubble: string; userBubble: string; border: string }> = {
   [Theme.BLACK]: {
     bg: 'bg-gray-950',
@@ -56,7 +65,7 @@ export const THEME_STYLES: Record<Theme, { bg: string; text: string; input: stri
     userBubble: 'bg-orange-500 text-white',
     border: 'border-orange-200'
   },
-  [Theme.WHITE]: {
+  [Theme.LIGHT]: {
     bg: 'bg-white',
     text: 'text-gray-900',
     input: 'bg-gray-50 border-gray-200 focus:border-gray-400',
