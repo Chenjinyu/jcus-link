@@ -51,6 +51,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // gets theme.BLACK as the default value.
   const [theme, setTheme] = useState<Theme>(Theme.BLACK);
 
   // Load theme from localStorage on mount

@@ -18,7 +18,7 @@ export default function HomePage() {
       {/* Animated Circuit Board Background */}
       <CircuitBackground />
 
-      {/* Main Content */}
+      {/* Main Content of the page */}
       <div className="relative max-w-4xl mx-auto px-4 py-10 sm:py-16">
         <div className="mx-auto text-center">
           {/* Logo */}

@@ -35,6 +35,7 @@ export default function NavigationBar() {
         color: themeStyle.navbarText,
       }}
     >
+      {/* Navigator Bar Menus */}
       <nav className="container mx-auto flex h-16 items-center px-4">
         
         {/* Logo */}
