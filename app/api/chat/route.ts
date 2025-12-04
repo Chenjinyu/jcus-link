@@ -8,9 +8,13 @@ export async function POST(req: Request) {
     webSearch 
   }: { 
     messages: UIMessage[]; 
-    model: string;
+    model: selectedModel;
     webSearch?: boolean;
   } = await req.json();
+
+  const modelToUse = selectedModel || 'gpt-4o';
+
+
   const result = streamText({
     model: webSearch ? 'perplexity/sonar' : model,
     messages: convertToModelMessages(messages),
