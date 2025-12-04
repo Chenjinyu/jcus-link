@@ -12,13 +12,27 @@ import { findRelevantContent } from '@/app/lib/embedding';
 import { ollamaModel } from '@/app/lib/models/ollama';
 import { selectModel } from '@/app/utils/utils';
 import { PROMPT_NEW, PROMPT_DEFAULT } from '@/app/configs/config';
+
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-
 export async function POST(req: Request) {
-  const { messages, metadata }: { messages: UIMessage[] , metadata?: any} = await req.json();
-  console.log('Incoming messages:', JSON.stringify(messages, null, 2));  
+  const { 
+    messages, 
+    model: selectedModel, 
+    webSearch 
+  }: { 
+    messages: UIMessage[];
+    model?: string;
+    webSearch?: boolean;
+  } = await req.json();
+
+  console.log('[DEBUG] Incoming request:', {
+    messageCount: messages.length,
+    selectedModel,
+    webSearch
+  });
+
   const lastMessage = messages[messages.length - 1];
   console.log('Last message parts:', lastMessage)
   // const modelSelectionPart = lastMessage.parts.find(
@@ -33,15 +47,12 @@ export async function POST(req: Request) {
   //   };
   // };
 
-  const {
-    metadata: {
-      metadataType,
-      selectedModelName,
-    } = {}
-  } = lastMessage;
-  console.log('[DEBUG] Selected model from message metadata:', selectedModelName);
+  // Use the model from request body, fallback to metadata, then default
+  const modelToUse = selectedModel || 'gpt-4o';
+  console.log('[DEBUG] Using model:', modelToUse);
+
   const result = streamText({
-    model: selectModel(selectedModelName),
+    model: selectModel(modelToUse),
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(5),
     system: PROMPT_DEFAULT,
@@ -72,6 +83,24 @@ export async function POST(req: Request) {
           return result;
         }
       }),
+      // Optional: Add web search tool if webSearch is enabled
+      ...(webSearch ? {
+        webSearch: tool({
+          description: `Search the web for current information. Use this when the user asks about recent events, news, or information that might not be in your training data.`,
+          inputSchema: z.object({
+            query: z.string().describe('the search query'),
+          }),
+          execute: async ({ query }) => {
+            console.log('[DEBUG] route.ts.POST.tool.webSearch with query:', { query });
+            // Implement your web search logic here
+            // For now, return a placeholder
+            return { 
+              message: 'Web search is enabled but not yet implemented',
+              query 
+            };
+          }
+        }),
+      } : {}),
     },
     onError: (error) => {
       console.error('[DEBUG][POST] Error during AI processing:', error);
