@@ -2,18 +2,18 @@
 'use client';
 
 import React from 'react';
-import { useTheme, THEME_STYLES } from '../context/ThemeContext';
+import { useTheme, getComponentStyle } from '../context/ThemeContext';
 
 export default function AboutPage() {
   const { theme } = useTheme();
-  const themeStyle = THEME_STYLES[theme];
+  const themeStyle = getComponentStyle(theme, 'navigator');
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div 
           className="p-8 rounded-lg border-2"
-          style={{ borderColor: themeStyle.navbarBorder }}
+          style={{ borderColor: themeStyle.borderColor }}
         >
           <h1 className="text-4xl font-bold mb-8">About Me</h1>
           

@@ -1,24 +1,18 @@
 'use client';
 
 import React from 'react';
-import { useTheme, Theme, THEME_STYLES } from '@/app/context/ThemeContext';
+import { useTheme, ThemeKeys, getComponentStyle } from '@/app/context/ThemeContext';
 import { Palette } from 'lucide-react';
 
 export default function ThemeColorPicker() {
   const { theme, setTheme } = useTheme();
 
-  const themeColors = {
-    [Theme.BLACK]: 'rgba(2, 2, 2, 1)',
-    [Theme.DARK_BLUE]: 'rgba(1, 29, 43, 1)',
-    [Theme.LIGHT_ORANGE]: 'rgb(255, 237, 213)',
-    [Theme.LIGHT]: '#ffffff',
-  };
-
-  const themeLabels = {
-    [Theme.BLACK]: 'Black',
-    [Theme.DARK_BLUE]: 'Dark Blue',
-    [Theme.LIGHT_ORANGE]: 'Light Orange',
-    [Theme.LIGHT]: 'Light',
+  // Get theme colors from centralized COMMON_COLOR_STYLE
+  const themeColors: Record<ThemeKeys, string> = {
+    [ThemeKeys.BLACK]: getComponentStyle(ThemeKeys.BLACK, 'document').backgroundColor,
+    [ThemeKeys.DARK_BLUE]: getComponentStyle(ThemeKeys.DARK_BLUE, 'document').backgroundColor,
+    [ThemeKeys.LIGHT_ORANGE]: getComponentStyle(ThemeKeys.LIGHT_ORANGE, 'document').backgroundColor,
+    [ThemeKeys.LIGHT]: getComponentStyle(ThemeKeys.LIGHT, 'document').backgroundColor,
   };
 
   return (
@@ -33,23 +27,26 @@ export default function ThemeColorPicker() {
         border-gray-300 dark:border-white/10
         gap-1
       ">
-        {(Object.keys(THEME_STYLES) as Theme[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTheme(t)}
-            aria-label={`Switch to ${themeLabels[t]} theme`}
-            title={themeLabels[t]}
-            className={`
-              rounded-full transition-transform
-              border-2 
-              ${theme === t ? 'scale-110 border-blue-500' : 'border-transparent'}
-              w-5 h-5 sm:w-6 sm:h-6
-            `}
-            style={{
-              backgroundColor: themeColors[t],
-            }}
-          />
-        ))}
+        {(Object.keys(ThemeKeys) as Array<keyof typeof ThemeKeys>).map((key) => {
+          const themeKey = ThemeKeys[key];
+          return (
+            <button
+              key={themeKey}
+              onClick={() => setTheme(themeKey)}
+              aria-label={`Switch to ${key} theme`}
+              title={key}
+              className={`
+                rounded-full transition-transform
+                border-2 
+                ${theme === themeKey ? 'scale-110 border-blue-500' : 'border-transparent'}
+                w-5 h-5 sm:w-6 sm:h-6
+              `}
+              style={{
+                backgroundColor: themeColors[themeKey],
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );

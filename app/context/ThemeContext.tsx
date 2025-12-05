@@ -3,68 +3,277 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// the type of Theme and constant of THEME_STYLES keep in the ThemeContext,
-// because they won't be used for other component except ThemeColorPicker.
-export enum Theme {
-  LIGHT = 'light',
-  DARK_BLUE = 'darkBlue',
+// Theme Keys - Single source of truth
+export enum ThemeKeys {
   BLACK = 'Black',
-  LIGHT_ORANGE = 'lightOrange',
+  DARK_BLUE = 'Dark Blue',
+  LIGHT_ORANGE = 'Light Orange',
+  LIGHT = 'light',
 }
 
-export const THEME_STYLES = {
-  [Theme.BLACK]: {
-    backgroundColor: 'rgba(2, 2, 2, 1)',
-    color: '#ffffff',
-    navbarBg: 'rgba(2, 2, 2, 1)',
-    navbarText: '#ffffff',
-    navbarBorder: 'rgba(255, 255, 255, 0.1)',
+// Component Style Types
+export interface ThemeColorStyle {
+  backgroundColor: string;
+  color: string;
+  borderColor?: string;
+}
+
+export interface ComponentThemeStyles {
+  document: ThemeColorStyle; 
+  navigator: ThemeColorStyle;
+  oauthButton: ThemeColorStyle;
+  chatWindow: ThemeColorStyle;
+  message: ThemeColorStyle; // message style is in the conversation, the message style
+  userAvatar: ThemeColorStyle;
+  assisstantAvator: ThemeColorStyle;
+  button: ThemeColorStyle;
+  input: ThemeColorStyle;
+  divider?: ThemeColorStyle;
+}
+
+// Complete Theme Configuration
+type ThemeConfigType = {
+  [key in ThemeKeys]: ComponentThemeStyles;
+}
+
+export const COMMON_COLOR_STYLE: ThemeConfigType = {
+  [ThemeKeys.BLACK]: {
+    document: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff',
+    },
+    navigator: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    chatWindow: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff)',
+    },
+    message: {
+      backgroundColor: 'rffffff',
+      color: 'rgba(2, 2, 2, 1)',
+    },
+    userAvatar: {
+      backgroundColor: 'rgba(2, 2, 2, 0.1)',
+      color: 'rgba(2, 2, 2, 1)',
+    },
+    assisstantAvator: {
+      backgroundColor: '#ffffff',
+      color: '#1f2937', // dark gray
+    },
+    oauthButton: {
+      borderColor: 'rgba(255,255,255,0.15)',
+      backgroundColor: 'rgba(255,255,255,0.05)',
+      color: 'rgba(2, 2, 2, 1)',
+    },
+    button: {
+      backgroundColor: '#004059ff',
+      color: '#ffffff',
+      borderColor: 'rgba(2, 2, 2, 0.2)',
+    },
+    input: {
+      backgroundColor: 'transparent',
+      color: 'rgba(2, 2, 2, 1)',
+      borderColor: 'rgba(2, 2, 2, 0.1)',
+    },
+    divider: {
+      borderColor: 'rgba(255,255,255,0.15)',
+      backgroundColor: 'transparent',
+      color: 'rgba(2, 2, 2, 1)',
+    },
   },
-  [Theme.DARK_BLUE]: {
-    backgroundColor: 'rgba(1, 29, 43, 1)',
-    color: '#ffffff',
-    navbarBg: 'rgba(1, 29, 43, 1)',
-    navbarText: '#ffffff',
-    navbarBorder: 'rgba(255, 255, 255, 0.1)',
+
+  [ThemeKeys.DARK_BLUE]: {
+    document: {
+      backgroundColor: 'rgba(1, 29, 43, 1)',
+      color: '#ffffff',
+    },
+    navigator: {
+      backgroundColor: 'rgba(1, 29, 43, 1)',
+      color: '#ffffff',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    chatWindow: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff)',
+    },
+    message: {
+      backgroundColor: '#ffffff',
+      color: '#ffffff',
+    },
+    userAvatar: {
+      backgroundColor: 'rgba(1, 29, 43, 0.2)',
+      color: '#ffffff',
+    },
+    assisstantAvator: {
+      backgroundColor: '#ffffff',
+      color: '#1f2937', // dark gray
+    },
+    oauthButton: {
+      borderColor: 'rgba(255,255,255,0.15)',
+      backgroundColor: 'rgba(255,255,255,0.05)',
+      color: '#ffffff',
+    },
+    button: {
+      backgroundColor: '#004059ff',
+      color: '#ffffff',
+      borderColor: '#004059ff',
+    },
+    input: {
+      backgroundColor: 'transparent',
+      color: '#ffffff',
+      borderColor: 'rgba(255,255,255,0.1)',
+    },
+    divider: {
+      borderColor: 'rgba(255,255,255,0.15)',
+      backgroundColor: 'transparent',
+      color: '#ffffff',
+    },
   },
-  [Theme.LIGHT_ORANGE]: {
-    backgroundColor: 'rgb(255, 237, 213)',
-    color: '#292524',
-    navbarBg: 'rgb(255, 237, 213)',
-    navbarText: '#292524',
-    navbarBorder: '#fbbf24',
+
+  [ThemeKeys.LIGHT_ORANGE]: {
+    document: {
+      backgroundColor: 'rgb(255, 237, 213)',
+      color: '#292524',
+    },
+    navigator: {
+      backgroundColor: 'rgb(255, 237, 213)',
+      color: '#292524',
+      borderColor: '#fbbf24',
+    },
+    chatWindow: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff)',
+    },
+    message: {
+      backgroundColor: '#292524',
+      color: 'rgb(255, 237, 213)',
+    },
+    userAvatar: {
+      backgroundColor: 'rgba(255, 237, 213, 0.15)',
+      color: 'rgb(255, 237, 213)',
+    },
+    assisstantAvator: {
+      backgroundColor: '#ffffff',
+      color: '#1f2937', // dark gray
+    },
+    oauthButton: {
+      borderColor: '#d1d5db',
+      backgroundColor: '#ffffff',
+      color: 'rgb(255, 237, 213)',
+    },
+    button: {
+      backgroundColor: '#004059ff',
+      color: '#ffffff',
+      borderColor: '#004059ff',
+    },
+    input: {
+      backgroundColor: 'transparent',
+      color: 'rgb(255, 237, 213)',
+      borderColor: '#d1d5db',
+    },
+    divider: {
+      borderColor: '#d1d5db',
+      backgroundColor: 'transparent',
+      color: 'rgb(255, 237, 213)',
+    },
   },
-  [Theme.LIGHT]: {
-    backgroundColor: '#ffffff',
-    color: '#111111',
-    navbarBg: '#ffffff',
-    navbarText: '#111111',
-    navbarBorder: '#e5e7eb',
+
+  [ThemeKeys.LIGHT]: {
+    document: {
+      backgroundColor: '#ffffff',
+      color: '#111111',
+    },
+    navigator: {
+      backgroundColor: '#ffffff',
+      color: '#111111',
+      borderColor: '#e5e7eb',
+    },
+    chatWindow: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff)',
+    },
+    message: {
+      backgroundColor: 'rgb(255, 237, 213)',
+      color: '#ffffff',
+    },
+    userAvatar: {
+      backgroundColor: 'rgba(255, 237, 213, 0.2)',
+      color: '#ffffff',
+    },
+    assisstantAvator: {
+      backgroundColor: '#ffffff',
+      color: '#1f2937', // dark gray
+    },
+    oauthButton: {
+      borderColor: '#d1d5db',
+      backgroundColor: '#ffffff',
+      color: '#1f2937',
+    },
+    button: {
+      backgroundColor: '#004059ff',
+      color: '#ffffff',
+      borderColor: '#004059ff',
+    },
+    input: {
+      backgroundColor: 'transparent',
+      color: '#1f2937',
+      borderColor: '#d1d5db',
+    },
+    divider: {
+      borderColor: '#d1d5db',
+      backgroundColor: 'transparent',
+      color: '#1f2937',
+    },
+  },
+}
+
+// Helper functions
+export function getComponentStyle(
+  themeKey: ThemeKeys,
+  component: keyof ComponentThemeStyles
+): ThemeColorStyle {
+  const style = COMMON_COLOR_STYLE[themeKey][component];
+  if (!style) {
+    throw new Error(`Style not found for theme`);
   }
-};
+  return style;
+}
+
+export function isDarkTheme(themeKey: ThemeKeys): boolean {
+  return themeKey === ThemeKeys.BLACK || themeKey === ThemeKeys.DARK_BLUE;
+}
+
+export function getThemeStyles(themeKey: ThemeKeys): ComponentThemeStyles {
+  return COMMON_COLOR_STYLE[themeKey];
+}
 
 interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: ThemeKeys;
+  setTheme: (theme: ThemeKeys) => void;
 }
 
+// Create Theme Context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Theme Provider Component
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // gets theme.BLACK as the default value.
-  const [theme, setTheme] = useState<Theme>(Theme.BLACK);
+  const [theme, setTheme] = useState<ThemeKeys>(ThemeKeys.BLACK);
 
   // Load theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('app-theme') as Theme;
-    if (savedTheme && Object.values(Theme).includes(savedTheme)) {
+    const savedTheme = localStorage.getItem('app-theme') as ThemeKeys;
+    if (savedTheme && Object.values(ThemeKeys).includes(savedTheme)) {
       setTheme(savedTheme);
     }
   }, []);
 
-  // Apply theme styles to body and save to localStorage
+  // Apply theme styles to document/root component using centralized configuration
   useEffect(() => {
-    const styles = THEME_STYLES[theme];
+    const styles = getComponentStyle(theme, 'document');
     document.body.style.backgroundColor = styles.backgroundColor;
     document.body.style.color = styles.color;
     localStorage.setItem('app-theme', theme);
@@ -77,11 +286,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ✅ THIS IS THE HOOK - IT'S HERE!
+
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+}
+
+// Deprecated: Kept for backward compatibility, use getComponentStyle instead
+export function getMessageColorStyle(
+  color_name: 'Black' | 'darkBlue' | 'lightOrange' | 'light'
+): ThemeColorStyle {
+  const themeKey = color_name as unknown as ThemeKeys;
+  return getComponentStyle(themeKey, 'message');
 }

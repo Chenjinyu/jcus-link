@@ -3,14 +3,14 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme, Theme, THEME_STYLES } from "@/app/context/ThemeContext";
+import { useTheme, getComponentStyle, isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
 
 export default function HomePage() {
   const { theme } = useTheme();
-  const themeStyle = THEME_STYLES[theme];
-
+  const themeStyle = getComponentStyle(theme, 'document');
   // Determine if theme is light or dark used to change the content font color
-  const isLightTheme = theme === Theme.LIGHT || theme === Theme.LIGHT_ORANGE;
+  const isDark = isDarkTheme(theme as ThemeKeys);
+  
   return (
     <>
     {/* Main Content of the page */}
@@ -56,13 +56,13 @@ export default function HomePage() {
             href="/article"
             className="w-full sm:w-auto px-6 py-3 border-2 rounded-lg transition-all duration-300 font-medium text-center"
             style={{
-              borderColor: themeStyle.color,
+              borderColor: themeStyle.backgroundColor,
               color: themeStyle.color,
               minWidth: 0,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = isLightTheme ? '#004059ff' : themeStyle.color;
-              e.currentTarget.style.color = isLightTheme ? '#ffffff' : themeStyle.backgroundColor;
+              e.currentTarget.style.backgroundColor = isDark ? themeStyle.color : '#004059ff';
+              e.currentTarget.style.color = isDark ? themeStyle.backgroundColor: '#ffffff';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';

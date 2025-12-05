@@ -4,10 +4,9 @@
 
 // Theme utilities
 export { 
-  isDarkTheme, 
   models, 
   type Model 
-} from '@/app/utils/theme-utils';
+} from '@/app/utils/ai-model-utils';
 
 // Components
 export { 

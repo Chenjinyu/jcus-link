@@ -2,35 +2,25 @@
 
 import { Sparkles, User } from 'lucide-react';
 import { MessageRole } from '@/app/types';
-import { isDarkTheme } from '@/app/utils/theme-utils';
+import { useTheme, getComponentStyle, isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
 
 // =============================================================================
 // AVATAR COMPONENT
 // =============================================================================
 export interface AvatarProps {
   role: MessageRole;
-  theme: string;
-  themeStyle: Record<string, string>;
 }
 
-export const Avatar = ({ role, theme, themeStyle }: AvatarProps) => {
+export const Avatar = ({ role }: AvatarProps) => {
   const isUser = role === 'user';
-  const isDark = isDarkTheme(theme);
+  const { theme } = useTheme();
+  const isDark = isDarkTheme(theme as ThemeKeys);
 
-  // Assistant avatar styles based on theme
-  const getAssistantAvatarStyle = () => {
-    if (isDark) {
-      // Dark theme: white bg, dark icon
-      return {
-        backgroundColor: '#ffffff',
-        color: '#1f2937', // dark gray
-      };
-    } else {
-      // Light themes: keep the gradient (handled by className)
-      return undefined;
-    }
-  };
+  const userAvatarThemeStyle = getComponentStyle(theme as ThemeKeys, 'userAvatar');
+  const assisstantAvatarThemeStyle = getComponentStyle(theme as ThemeKeys, 'assisstantAvator');
 
+  const avatarStyle = isUser ? userAvatarThemeStyle : assisstantAvatarThemeStyle;
+  
   return (
     <div
       className={`
@@ -43,13 +33,10 @@ export const Avatar = ({ role, theme, themeStyle }: AvatarProps) => {
             : 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-sm'
         }
       `}
-      style={isUser 
-        ? { 
-          backgroundColor: themeStyle.color,
-          color: themeStyle.backgroundColor 
-        }
-        : getAssistantAvatarStyle()
-      }
+      style={{
+        backgroundColor: avatarStyle.backgroundColor,
+        color: avatarStyle.color,
+      }}
     >
       {isUser ? <User size={16} /> : <Sparkles size={16} />}
     </div>

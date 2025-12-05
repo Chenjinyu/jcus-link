@@ -7,13 +7,13 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import ThemeColorPicker from '@/app/customs/theme/ThemeColorPicker';
 import LoginDropdown from '@/app/customs/LoginDropdown';
-import { useTheme, THEME_STYLES, Theme } from '@/app/context/ThemeContext';
+import { useTheme, getComponentStyle } from '@/app/context/ThemeContext';
 import { Menu, X } from 'lucide-react';
 
 export default function NavigationBar() {
   const pathname = usePathname();
   const { theme } = useTheme();
-  const themeStyle = THEME_STYLES[theme];
+  const themeStyle = getComponentStyle(theme, 'navigator');
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -24,15 +24,14 @@ export default function NavigationBar() {
     { name: 'About', path: '/about' },
   ];
 
-  const isDarkTheme = theme === Theme.DARK_BLUE || theme === Theme.BLACK;
 
   return (
     <header
       className="sticky top-0 z-50 w-full border-b-4 backdrop-blur-lg"
       style={{
-        backgroundColor: themeStyle.navbarBg,
-        borderColor: themeStyle.navbarBorder,
-        color: themeStyle.navbarText,
+        backgroundColor: themeStyle.backgroundColor,
+        borderColor: themeStyle.borderColor,
+        color: themeStyle.color,
       }}
     >
       {/* Navigator Bar Menus */}
@@ -56,9 +55,9 @@ export default function NavigationBar() {
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? (
-            <X size={26} style={{ color: themeStyle.navbarText }} />
+            <X size={26} style={{ color: themeStyle.color }} />
           ) : (
-            <Menu size={26} style={{ color: themeStyle.navbarText }} />
+            <Menu size={26} style={{ color: themeStyle.color }} />
           )}
         </button>
 
@@ -73,7 +72,7 @@ export default function NavigationBar() {
                   href={item.path}
                   className="transition-opacity hover:opacity-80"
                   style={{
-                    color: themeStyle.navbarText,
+                    color: themeStyle.color,
                     opacity: active ? 1 : 0.65,
                   }}
                 >
@@ -90,13 +89,12 @@ export default function NavigationBar() {
 
           <div
             className="h-6 w-px"
-            style={{ backgroundColor: themeStyle.navbarBorder }}
+            style={{ backgroundColor: themeStyle.borderColor }}
           />
 
           <LoginDropdown
-            navbarBg={themeStyle.navbarBg}
-            navbarText={themeStyle.navbarText}
-            isDarkTheme={isDarkTheme}
+            navbarBg={themeStyle.backgroundColor}
+            navbarText={themeStyle.color}
           />
         </div>
       </nav>
@@ -105,7 +103,7 @@ export default function NavigationBar() {
       {menuOpen && (
         <div
           className="sm:hidden px-4 pt-3 pb-5 space-y-3 border-t"
-          style={{ borderColor: themeStyle.navbarBorder }}
+          style={{ borderColor: themeStyle.borderColor }}
         >
           {/* Nav items */}
           {navItems.map((item) => {
@@ -117,7 +115,7 @@ export default function NavigationBar() {
                 onClick={() => setMenuOpen(false)}
                 className="block py-2 text-base font-medium transition-opacity"
                 style={{
-                  color: themeStyle.navbarText,
+                  color: themeStyle.color,
                   opacity: active ? 1 : 0.65,
                 }}
               >
@@ -128,14 +126,13 @@ export default function NavigationBar() {
 
           {/* Theme + Login */}
           <div className="flex justify-between items-center pt-4 border-t"
-            style={{ borderColor: themeStyle.navbarBorder }}
+            style={{ borderColor: themeStyle.borderColor }}
           >
             <ThemeColorPicker />
 
             <LoginDropdown
-              navbarBg={themeStyle.navbarBg}
-              navbarText={themeStyle.navbarText}
-              isDarkTheme={isDarkTheme}
+              navbarBg={themeStyle.backgroundColor}
+              navbarText={themeStyle.color}
             />
           </div>
         </div>

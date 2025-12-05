@@ -1,18 +1,17 @@
 'use client';
 
 import { Sparkles } from 'lucide-react';
-import { isDarkTheme } from '@/app/utils/theme-utils';
+import { isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
 
 // =============================================================================
 // LOADING INDICATOR
 // =============================================================================
 export interface LoadingIndicatorProps {
   theme: string;
-  themeStyle: Record<string, string>;
 }
 
-export const LoadingIndicator = ({ theme, themeStyle }: LoadingIndicatorProps) => {
-  const isDark = isDarkTheme(theme);
+export const LoadingIndicator = ({ theme }: LoadingIndicatorProps) => {
+  const isDark = isDarkTheme(theme as ThemeKeys);
 
   return (
     <div className="flex gap-3 py-4">

@@ -3,13 +3,6 @@
 // =============================================================================
 
 /**
- * Check if the theme is a dark theme
- */
-export const isDarkTheme = (theme: string): boolean => {
-  return theme === 'black' || theme === 'dark_blue';
-};
-
-/**
  * Available AI models
  */
 export const models = [

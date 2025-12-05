@@ -11,7 +11,7 @@ import {
 import { MessageRole } from '@/app/types';
 import { Avatar } from '@/app/customs/chat-interface/chat-components/Avatar';
 import { RoleLabel } from '@/app/customs/chat-interface/chat-components/RoleLabel';
-import { isDarkTheme } from '@/app/utils/theme-utils';
+import { ThemeColorStyle } from '@/app/context/ThemeContext';
 
 // =============================================================================
 // STYLED MESSAGE WRAPPER
@@ -23,8 +23,8 @@ export interface StyledMessageProps {
     parts: Array<{ type: string; text?: string }>;
   };
   isLatest: boolean;
-  theme: string;
-  themeStyle: Record<string, string>;
+  theme: 'Black' | 'darkBlue' | 'lightOrange' | 'light';
+  themeStyle: ThemeColorStyle;
   onRegenerate?: () => void;
 }
 
@@ -35,29 +35,29 @@ export const StyledMessage = ({
   themeStyle, 
   onRegenerate 
 }: StyledMessageProps) => {
-  const isDark = isDarkTheme(theme);
+  // const isDark = isDarkTheme(theme);
   const isUser = message.role === 'user';
   const textContent = message.parts
     .filter(part => part.type === 'text')
     .map(part => part.text)
     .join('\n');
 
-  // Get user message bubble styles based on theme
-  const getUserBubbleStyle = () => {
-    if (isDark) {
-      // Dark themes: white background
-      return {
-        backgroundColor: '#ffffff',
-        color: '#1f2937', // dark-gray text
-      };
-    } else {
-      // Light themes: dark-gray background
-      return {
-        backgroundColor: '#4b5563', // dark-gray (gray-600)
-        color: '#ffffff', // white text
-      };
-    }
-  };
+  // // Get user message bubble styles based on theme
+  // const getUserBubbleStyle = () => {
+  //   if (isDark) {
+  //     // Dark themes: white background
+  //     return {
+  //       backgroundColor: '#ffffff',
+  //       color: '#1f2937', // dark-gray text
+  //     };
+  //   } else {
+  //     // Light themes: dark-gray background
+  //     return {
+  //       backgroundColor: '#ffffff', // dark-gray (gray-600)
+  //       color: '#ffffff', // white text
+  //     };
+  //   }
+  // };
 
   // Handle copy action
   const handleCopy = () => {
@@ -69,8 +69,6 @@ export const StyledMessage = ({
       {/* Avatar */}
       <Avatar 
         role={message.role} 
-        theme={theme}
-        themeStyle={themeStyle} 
       />
 
       {/* Content */}
@@ -86,9 +84,7 @@ export const StyledMessage = ({
               : 'max-w-full [&_.is-assistant]:bg-transparent [&_*]:bg-transparent'
             }
           `}
-          style={isUser 
-            ? getUserBubbleStyle()
-            : undefined}
+          style={isUser ? themeStyle : undefined}
         >
           <Message 
             from={message.role}

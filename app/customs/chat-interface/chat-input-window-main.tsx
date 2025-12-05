@@ -36,14 +36,14 @@ import {
 } from '@/components/ai-elements/conversation';
 
 // Theme context
-import { useTheme, THEME_STYLES } from '@/app/context/ThemeContext';
+import { useTheme, getComponentStyle } from '@/app/context/ThemeContext';
 // Local chat components
 import {
   models,
   StyledMessage,
   LoadingIndicator,
   EmptyState,
-} from './chat-components';
+} from '@/app/customs/chat-interface/chat-components';
 
 // =============================================================================
 // MAIN COMPONENT
@@ -63,7 +63,11 @@ const ChatInputWindowComponent = () => {
     
 
   const { theme } = useTheme();
-  const themeStyle = THEME_STYLES[theme];
+
+  // the message buddle in the converation
+  const messageThemeStyle = getComponentStyle(theme, 'message');
+  // the chat page theme style should follow with the parent
+  const chatWindowThemeStyle = getComponentStyle(theme, 'chatWindow');
 
   const isLoading = status === 'streaming' || status === 'submitted';
 
@@ -110,9 +114,9 @@ const ChatInputWindowComponent = () => {
     <div
       className="w-full h-1/2 md:h-full flex flex-col rounded-xl border shadow-sm overflow-hidden"
       style={{
-        backgroundColor: themeStyle.backgroundColor,
-        borderColor: themeStyle.navbarBorder,
-        color: themeStyle.color,
+        backgroundColor: chatWindowThemeStyle.backgroundColor,
+        borderColor: chatWindowThemeStyle.borderColor,
+        color: chatWindowThemeStyle.color,
       }}
     >
       {/* Conversation Area */}
@@ -121,7 +125,7 @@ const ChatInputWindowComponent = () => {
           {messages.length === 0 ? (
             <EmptyState 
               theme={theme}
-              themeStyle={themeStyle} 
+              themeStyle={messageThemeStyle} 
               onSuggestionClick={handleSuggestionClick} 
             />
           ) : (
@@ -132,12 +136,12 @@ const ChatInputWindowComponent = () => {
                   message={message}
                   isLatest={index === messages.length - 1 && message.role === 'assistant'}
                   theme={theme}
-                  themeStyle={themeStyle}
+                  themeStyle={messageThemeStyle}
                   onRegenerate={handleRegenerate}
                 />
               ))}
               {isLoading && messages[messages.length - 1]?.role === 'user' && (
-                <LoadingIndicator theme={theme} themeStyle={themeStyle} />
+                <LoadingIndicator theme={theme} />
               )}
             </>
           )}
@@ -168,7 +172,7 @@ const ChatInputWindowComponent = () => {
               placeholder="Send a message..."
               style={{
                 backgroundColor: 'transparent',
-                color: themeStyle.color,
+                color: chatWindowThemeStyle.color,
                 border: 'none',
                 outline: 'none',
                 boxShadow: 'none',
@@ -222,8 +226,8 @@ const ChatInputWindowComponent = () => {
       <div 
         className="text-center py-2 text-[10px] opacity-40 border-t"
         style={{ 
-          borderColor: themeStyle.navbarBorder,
-          color: themeStyle.color 
+          borderColor: chatWindowThemeStyle.borderColor,
+          color: chatWindowThemeStyle.color 
         }}
       >
         AI can make mistakes. Please verify important information.

@@ -1,19 +1,20 @@
 'use client';
 
 import { Sparkles } from 'lucide-react';
-import { isDarkTheme } from '@/app/utils/theme-utils';
+// Theme context
+import { ThemeColorStyle, isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
 
 // =============================================================================
 // EMPTY STATE
 // =============================================================================
 export interface EmptyStateProps {
   theme: string;
-  themeStyle: Record<string, string>;
+  themeStyle: ThemeColorStyle;
   onSuggestionClick: (text: string) => void;
 }
 
 export const EmptyState = ({ theme, themeStyle, onSuggestionClick }: EmptyStateProps) => {
-  const isDark = isDarkTheme(theme);
+  const isDark = isDarkTheme(theme as ThemeKeys);
   const suggestions = [
     "What can you help me with?",
     "Tell me about yourself",
@@ -46,7 +47,7 @@ export const EmptyState = ({ theme, themeStyle, onSuggestionClick }: EmptyStateP
             onClick={() => onSuggestionClick(suggestion)}
             className="px-4 py-2 rounded-full text-sm border transition-all duration-200 hover:scale-105"
             style={{
-              borderColor: themeStyle.navbarBorder,
+              borderColor: themeStyle.borderColor,
               color: themeStyle.color,
               backgroundColor: 'transparent',
             }}
