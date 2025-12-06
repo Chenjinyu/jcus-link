@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { User, CircleUser } from 'lucide-react';
+import { useTheme, getComponentStyle, ThemeKeys } from '@/app/context/ThemeContext';
 
 interface LoginDropdownProps {
   navbarBg?: string;
@@ -13,6 +14,7 @@ export default function LoginDropdown({ navbarBg, navbarText, isDarkTheme = fals
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   // Auto-close on outside click
   useEffect(() => {
@@ -32,10 +34,13 @@ export default function LoginDropdown({ navbarBg, navbarText, isDarkTheme = fals
       }
     : {};
 
+  // Get theme-specific OAuth button style
+  const oauthButtonStyle = getComponentStyle(theme as ThemeKeys, 'oauthButton');
+
   const oauthBtnBaseStyle = {
-    borderColor: isDarkTheme ? 'rgba(255,255,255,0.15)' : '#d1d5db',
-    backgroundColor: isDarkTheme ? 'rgba(255,255,255,0.05)' : '#ffffff',
-    color: navbarText,
+    borderColor: oauthButtonStyle.borderColor,
+    backgroundColor: oauthButtonStyle.backgroundColor,
+    color: oauthButtonStyle.color,
   };
 
   return (

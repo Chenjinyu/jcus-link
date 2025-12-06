@@ -24,6 +24,7 @@ export interface ComponentThemeStyles {
   oauthButton: ThemeColorStyle;
   chatWindow: ThemeColorStyle;
   message: ThemeColorStyle; // message style is in the conversation, the message style
+  emptyMessageState: ThemeColorStyle; // when open the /chat page, its defualt page
   userAvatar: ThemeColorStyle;
   assisstantAvator: ThemeColorStyle;
   button: ThemeColorStyle;
@@ -52,11 +53,15 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       color: '#ffffff)',
     },
     message: {
-      backgroundColor: 'rffffff',
+      backgroundColor: '#ffffff',
       color: 'rgba(2, 2, 2, 1)',
     },
+    emptyMessageState: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
+      color: '#ffffff',
+    },
     userAvatar: {
-      backgroundColor: 'rgba(2, 2, 2, 0.1)',
+      backgroundColor: 'rgba(225, 231, 240, 0.2)',
       color: 'rgba(2, 2, 2, 1)',
     },
     assisstantAvator: {
@@ -64,9 +69,9 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       color: '#1f2937', // dark gray
     },
     oauthButton: {
-      borderColor: 'rgba(255,255,255,0.15)',
-      backgroundColor: 'rgba(255,255,255,0.05)',
-      color: 'rgba(2, 2, 2, 1)',
+      borderColor: '#d1d5db',
+      backgroundColor: '#ffffff',
+      color: '#1f2937',
     },
     button: {
       backgroundColor: '#004059ff',
@@ -96,25 +101,29 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       borderColor: 'rgba(255, 255, 255, 0.1)',
     },
     chatWindow: {
-      backgroundColor: 'rgba(2, 2, 2, 1)',
-      color: '#ffffff)',
+      backgroundColor: 'rgba(1, 29, 43, 1)',
+      color: '#ffffff',
     },
     message: {
       backgroundColor: '#ffffff',
       color: '#ffffff',
     },
-    userAvatar: {
-      backgroundColor: 'rgba(1, 29, 43, 0.2)',
+    emptyMessageState: {
+      backgroundColor: 'rgba(2, 2, 2, 1)',
       color: '#ffffff',
+    },
+    userAvatar: {
+      backgroundColor: 'rgba(225, 231, 240, 0.2)',
+      color: 'rgba(2, 2, 2, 1)',
     },
     assisstantAvator: {
       backgroundColor: '#ffffff',
       color: '#1f2937', // dark gray
     },
     oauthButton: {
-      borderColor: 'rgba(255,255,255,0.15)',
-      backgroundColor: 'rgba(255,255,255,0.05)',
-      color: '#ffffff',
+      borderColor: '#d1d5db',
+      backgroundColor: '#ffffff',
+      color: '#1f2937',
     },
     button: {
       backgroundColor: '#004059ff',
@@ -144,16 +153,20 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       borderColor: '#fbbf24',
     },
     chatWindow: {
-      backgroundColor: 'rgba(2, 2, 2, 1)',
+      backgroundColor: 'rgb(255, 237, 213)',
       color: '#ffffff)',
     },
     message: {
-      backgroundColor: '#292524',
-      color: 'rgb(255, 237, 213)',
+      backgroundColor: 'rgb(218, 223, 230)',
+      color: 'rgb(2, 15, 33)',
+    },
+    emptyMessageState: {
+      backgroundColor: 'rgb(255, 237, 213)',
+      color: '#00000',
     },
     userAvatar: {
-      backgroundColor: 'rgba(255, 237, 213, 0.15)',
-      color: 'rgb(255, 237, 213)',
+      backgroundColor: 'rgba(193, 204, 219)',
+      color: 'rgba(2, 2, 2, 1)',
     },
     assisstantAvator: {
       backgroundColor: '#ffffff',
@@ -162,7 +175,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     oauthButton: {
       borderColor: '#d1d5db',
       backgroundColor: '#ffffff',
-      color: 'rgb(255, 237, 213)',
+      color: '#1f2937',
     },
     button: {
       backgroundColor: '#004059ff',
@@ -192,16 +205,20 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       borderColor: '#e5e7eb',
     },
     chatWindow: {
-      backgroundColor: 'rgba(2, 2, 2, 1)',
-      color: '#ffffff)',
+      backgroundColor: '#ffffff',
+      color: '#ffffff',
     },
     message: {
+      backgroundColor: 'rgb(2, 15, 33)',
+      color: 'rgb(225, 230, 237)',
+    },
+    emptyMessageState: {
       backgroundColor: 'rgb(255, 237, 213)',
-      color: '#ffffff',
+      color: '#00000',
     },
     userAvatar: {
-      backgroundColor: 'rgba(255, 237, 213, 0.2)',
-      color: '#ffffff',
+      backgroundColor: 'rgba(193, 204, 219)',
+      color: 'rgba(2, 2, 2, 1)',
     },
     assisstantAvator: {
       backgroundColor: '#ffffff',
