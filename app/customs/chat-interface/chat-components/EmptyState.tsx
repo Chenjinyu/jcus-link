@@ -8,8 +8,6 @@ import { useTheme, ThemeColorStyle, getComponentStyle, isDarkTheme, ThemeKeys } 
 // EMPTY STATE
 // =============================================================================
 export interface EmptyStateProps {
-  theme: string;
-  themeStyle: ThemeColorStyle;
   onSuggestionClick: (text: string) => void;
 }
 
@@ -23,15 +21,15 @@ export const EmptyState = ({ onSuggestionClick }: EmptyStateProps) => {
     "How does this work?",
     "What are your capabilities?",
   ];
-
+  
   return (
     <div className="flex flex-col items-center justify-center h-full py-12 px-4">
       <div 
         className={`
           flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-6
-          ${isDark ? '' : 'bg-gradient-to-br from-violet-500 to-purple-600'}
+          ${isDark ? 'bg-gradient-to-br from-cyan-500' : 'bg-gradient-to-br from-sky-900'} 
         `}
-      >
+      > {/* <from-cyan-500></from-cyan-500> */}
         <Sparkles size={32}/>
       </div>
       <h2 className="text-xl font-semibold mb-2" style={{ color: themeStyle.color }}>

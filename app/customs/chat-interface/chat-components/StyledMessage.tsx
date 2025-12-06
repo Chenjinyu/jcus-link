@@ -23,7 +23,6 @@ export interface StyledMessageProps {
     parts: Array<{ type: string; text?: string }>;
   };
   isLatest: boolean;
-  theme: 'Black' | 'darkBlue' | 'lightOrange' | 'light';
   themeStyle: ThemeColorStyle;
   onRegenerate?: () => void;
 }
@@ -31,7 +30,6 @@ export interface StyledMessageProps {
 export const StyledMessage = ({ 
   message, 
   isLatest, 
-  theme, 
   themeStyle, 
   onRegenerate 
 }: StyledMessageProps) => {

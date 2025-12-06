@@ -133,7 +133,6 @@ const ChatInputWindowComponent = () => {
                   key={message.id}
                   message={message}
                   isLatest={index === messages.length - 1 && message.role === 'assistant'}
-                  theme={theme}
                   themeStyle={messageThemeStyle}
                   onRegenerate={handleRegenerate}
                 />
@@ -171,7 +170,7 @@ const ChatInputWindowComponent = () => {
               style={{
                 backgroundColor: 'transparent',
                 color: chatWindowThemeStyle.color,
-                border: 'none',
+                border: chatWindowThemeStyle.borderColor,
                 outline: 'none',
                 boxShadow: 'none',
               }}

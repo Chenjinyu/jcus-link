@@ -155,14 +155,17 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     chatWindow: {
       backgroundColor: 'rgb(255, 237, 213)',
       color: '#ffffff)',
+      borderColor: 'rgb(251, 191, 36)',
     },
     message: {
       backgroundColor: 'rgb(218, 223, 230)',
       color: 'rgb(2, 15, 33)',
+      borderColor: 'rgb(251, 191, 36)',
     },
     emptyMessageState: {
       backgroundColor: 'rgb(255, 237, 213)',
-      color: '#00000',
+      color: '#000000',
+      borderColor: 'rgb(251, 191, 36)',
     },
     userAvatar: {
       backgroundColor: 'rgba(193, 204, 219)',
@@ -214,7 +217,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     },
     emptyMessageState: {
       backgroundColor: 'rgb(255, 237, 213)',
-      color: '#00000',
+      color: '#000000',
     },
     userAvatar: {
       backgroundColor: 'rgba(193, 204, 219)',
