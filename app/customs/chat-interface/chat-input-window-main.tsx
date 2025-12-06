@@ -124,8 +124,6 @@ const ChatInputWindowComponent = () => {
         <ConversationContent className="px-4">
           {messages.length === 0 ? (
             <EmptyState 
-              theme={theme}
-              themeStyle={messageThemeStyle} 
               onSuggestionClick={handleSuggestionClick} 
             />
           ) : (

@@ -2,7 +2,7 @@
 
 import { Sparkles } from 'lucide-react';
 // Theme context
-import { ThemeColorStyle, isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
+import { useTheme, ThemeColorStyle, getComponentStyle, isDarkTheme, ThemeKeys } from '@/app/context/ThemeContext';
 
 // =============================================================================
 // EMPTY STATE
@@ -13,8 +13,10 @@ export interface EmptyStateProps {
   onSuggestionClick: (text: string) => void;
 }
 
-export const EmptyState = ({ theme, themeStyle, onSuggestionClick }: EmptyStateProps) => {
+export const EmptyState = ({ onSuggestionClick }: EmptyStateProps) => {
+  const { theme } = useTheme();
   const isDark = isDarkTheme(theme as ThemeKeys);
+  const themeStyle = getComponentStyle(theme as ThemeKeys, 'emptyMessageState');
   const suggestions = [
     "What can you help me with?",
     "Tell me about yourself",
@@ -30,7 +32,7 @@ export const EmptyState = ({ theme, themeStyle, onSuggestionClick }: EmptyStateP
           ${isDark ? '' : 'bg-gradient-to-br from-violet-500 to-purple-600'}
         `}
       >
-        <Sparkles size={32} style={{ color: isDark ? '#1f2937' : '#ffffff' }} />
+        <Sparkles size={32}/>
       </div>
       <h2 className="text-xl font-semibold mb-2" style={{ color: themeStyle.color }}>
         Start a conversation
