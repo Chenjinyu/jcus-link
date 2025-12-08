@@ -29,7 +29,7 @@ export const Avatar = ({ role }: AvatarProps) => {
         ${isUser 
           ? ''
           : isDark
-            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' 
+            ? 'bg-slate-300 ' 
             : 'bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-sm'
         }
       `}

@@ -61,7 +61,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       color: '#ffffff',
     },
     userAvatar: {
-      backgroundColor: 'rgba(225, 231, 240, 0.2)',
+      backgroundColor: 'rgba(225, 231, 240)',
       color: 'rgba(2, 2, 2, 1)',
     },
     assisstantAvator: {
@@ -113,8 +113,8 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
       color: '#ffffff',
     },
     userAvatar: {
-      backgroundColor: 'rgba(225, 231, 240, 0.2)',
-      color: 'rgba(2, 2, 2, 1)',
+      backgroundColor: 'rgba(225, 231, 240)',
+      color: '#000000',
     },
     assisstantAvator: {
       backgroundColor: '#ffffff',
@@ -154,7 +154,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     },
     chatWindow: {
       backgroundColor: 'rgb(255, 237, 213)',
-      color: '#ffffff)',
+      color: '#000000)',
       borderColor: 'rgb(251, 191, 36)',
     },
     message: {
@@ -209,10 +209,10 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     },
     chatWindow: {
       backgroundColor: '#ffffff',
-      color: '#ffffff',
+      color: '#000000',
     },
     message: {
-      backgroundColor: 'rgb(2, 15, 33)',
+      backgroundColor: '#f2ebf1',
       color: 'rgb(225, 230, 237)',
     },
     emptyMessageState: {

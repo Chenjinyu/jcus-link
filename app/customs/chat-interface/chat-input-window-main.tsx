@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, FileUIPart } from 'ai';
 import { GlobeIcon } from 'lucide-react';
 
 // AI Elements imports
@@ -50,6 +50,7 @@ import {
 // =============================================================================
 const ChatInputWindowComponent = () => {
   const [text, setText] = useState<string>('');
+  // get the first one model as default.
   const [model, setModel] = useState<string>(models[0].id);
   const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -63,13 +64,14 @@ const ChatInputWindowComponent = () => {
     
 
   const { theme } = useTheme();
-
   // the message buddle in the converation
   const messageThemeStyle = getComponentStyle(theme, 'message');
   // the chat page theme style should follow with the parent
   const chatWindowThemeStyle = getComponentStyle(theme, 'chatWindow');
-
   const isLoading = status === 'streaming' || status === 'submitted';
+
+  
+
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -79,20 +81,20 @@ const ChatInputWindowComponent = () => {
       return;
     }
 
-    // Use sendMessage with body for additional data
     sendMessage(
       {
         text: message.text || 'Sent with attachments',
-        files: message.files,
+        files: message.files, // Files are included here
       },
       {
         body: {
-          model: model,
+          selectedModel: model,
           webSearch: useWebSearch,
         },
       }
     );
-    setText('');
+  
+  setText('');
   };
 
   // Handle regenerate - regenerate the last assistant message
@@ -120,7 +122,7 @@ const ChatInputWindowComponent = () => {
       }}
     >
       {/* Conversation Area */}
-      <Conversation className="flex-1 min-h-0 overflow-y-auto">
+      <Conversation className="overflow-y-auto">
         <ConversationContent className="px-4">
           {messages.length === 0 ? (
             <EmptyState 

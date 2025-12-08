@@ -34,43 +34,41 @@ export const StyledMessage = ({
   onRegenerate 
 }: StyledMessageProps) => {
   // const isDark = isDarkTheme(theme);
-  const isUser = message.role === 'user';
+  // message.role = 'assistant';
+  const isUser = false; //message.role === 'user';
   const textContent = message.parts
     .filter(part => part.type === 'text')
     .map(part => part.text)
     .join('\n');
-
-  // // Get user message bubble styles based on theme
-  // const getUserBubbleStyle = () => {
-  //   if (isDark) {
-  //     // Dark themes: white background
-  //     return {
-  //       backgroundColor: '#ffffff',
-  //       color: '#1f2937', // dark-gray text
-  //     };
-  //   } else {
-  //     // Light themes: dark-gray background
-  //     return {
-  //       backgroundColor: '#ffffff', // dark-gray (gray-600)
-  //       color: '#ffffff', // white text
-  //     };
-  //   }
-  // };
-
+  
   // Handle copy action
   const handleCopy = () => {
     navigator.clipboard.writeText(textContent);
   };
 
+    // Static message bubble styles with dynamic width
+  const messageBubbleStyle: React.CSSProperties = {
+    // Dynamic width: auto but max 70% of viewport
+    width: 'fit-content',
+    maxWidth: '70%',
+    minWidth: '100px', // Optional: minimum width to avoid too small bubbles
+    borderRadius: '8px',
+    // padding: '12px 16px',
+    wordWrap: 'break-word',
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap', // Preserves line breaks
+  };
+
+
   return (
-    <div className={`group flex gap-3 ${isUser ? 'flex-row-reverse' : ''} py-4`}>
+    <div className={`group flex gap-3 ${isUser ? 'flex-row-reverse' : ''} py-4  w-full`}>
       {/* Avatar */}
       <Avatar 
         role={message.role} 
       />
 
       {/* Content */}
-      <div className={`flex-1 min-w-0 ${isUser ? 'flex flex-col items-end' : ''}`}>
+      <div className={`flex-1 min-w-0 flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
         {/* Role Label */}
         <RoleLabel role={message.role} />
 
@@ -78,11 +76,14 @@ export const StyledMessage = ({
         <div
           className={`
             ${isUser
-              ? 'flex flex-col gap-4'
-              : 'max-w-full [&_.is-assistant]:bg-transparent [&_*]:bg-transparent'
+              ? 'flex gap-4'
+              : ''
             }
           `}
-          style={isUser ? themeStyle : undefined}
+          style={{
+            ...themeStyle,
+            ...messageBubbleStyle
+          }}
         >
           <Message 
             from={message.role}
@@ -111,7 +112,7 @@ export const StyledMessage = ({
 
         {/* Actions for assistant messages - using AI Elements components */}
         {!isUser && (
-          <MessageActions className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <MessageActions className="mt-2 group-hover:opacity-100  duration-200 text-gray-400" >
             <MessageAction
               onClick={handleCopy}
               label="Copy"

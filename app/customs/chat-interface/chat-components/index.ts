@@ -6,7 +6,7 @@
 export { 
   models, 
   type Model 
-} from '@/app/utils/ai-model-utils';
+} from '@/app/utils/ai-model-services/types';
 
 // Components
 export { 
