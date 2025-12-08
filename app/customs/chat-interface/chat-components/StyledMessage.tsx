@@ -35,7 +35,7 @@ export const StyledMessage = ({
 }: StyledMessageProps) => {
   // const isDark = isDarkTheme(theme);
   // message.role = 'assistant';
-  const isUser = false; //message.role === 'user';
+  const isUser = message.role === 'user';
   const textContent = message.parts
     .filter(part => part.type === 'text')
     .map(part => part.text)
