@@ -2,22 +2,6 @@ import { modelRegistry } from './ModelRegistry';
 import { isValidModelId, getModelById } from './types';
 
 /**
- * Available AI models - dynamically generated from registry
- */
-export const models = modelRegistry.getAllModels();
-
-/**
- * 
- type Model = {
-  id: 'openai/gpt-4.1-mini' | 'openai/gpt-5-mini' | 'openai/gpt-5-nano' | 'claude-opus-4-20250514' | 'google_genai/gemini-2.0-flash' | 'ollama/llama3' | 'ollama/mistral';
-  name: string;
-};
-above equals below
- */
-export type Model = typeof models[number];
-
-
-/**
  * Initialize a model by ID with validation
  * @throws Error if model ID is invalid
  */
