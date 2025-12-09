@@ -1,10 +1,6 @@
+import { envConfig } from '@/app/configs/environment';
 import { LanguageModel } from 'ai';
 
-
-export interface ModelInfo {
-  id: string;
-  name: string;
-}
 
 /**
  * Available AI models
@@ -19,7 +15,29 @@ export const models = [
   { id: 'ollama/mistral', name: 'Mistral' },
 ];
 
+
+// Filter models based on environment
+export function getAvailableModels(){
+  if (envConfig.enableLocalOllama) {
+    // Local environment: show only Ollama models
+    return models.filter(m => m.id.startsWith('ollama/'));
+  }
+  // Other environments: show all models except Ollama
+  return models.filter(m => !m.id.startsWith('ollama/'));
+}
+/**
+ * 
+ type Model = {
+  id: 'openai/gpt-4.1-mini' | 'openai/gpt-5-mini' | 'openai/gpt-5-nano' | 'claude-opus-4-20250514' | 'google_genai/gemini-2.0-flash' | 'ollama/llama3' | 'ollama/mistral';
+  name: string;
+};
+above equals below
+ */
 export type Model = typeof models[number];
+export interface ModelInfo {
+  id: string;
+  name: string;
+}
 
 export interface AIModelService {
   name: string;
@@ -33,7 +51,8 @@ export interface AIModelService {
  * @returns true if model exists, false otherwise
  */
 export function isValidModelId(modelId: string): boolean {
-  return models.some((model) => model.id === modelId);
+  const availableModels = getAvailableModels();
+  return availableModels.some((model) => model.id === modelId);
 }
 
 /**
@@ -42,5 +61,6 @@ export function isValidModelId(modelId: string): boolean {
  * @returns ModelInfo if found, undefined otherwise
  */
 export function getModelById(modelId: string): ModelInfo | undefined {
-  return models.find((model) => model.id === modelId);
+  const availableModels = getAvailableModels();
+  return availableModels.find((model) => model.id === modelId);
 }
