@@ -15,6 +15,7 @@ export enum ThemeKeys {
 export interface ThemeColorStyle {
   backgroundColor: string;
   color: string;
+  textColor?: string;
   borderColor?: string;
 }
 
@@ -154,7 +155,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     },
     chatWindow: {
       backgroundColor: 'rgb(255, 237, 213)',
-      color: '#000000)',
+      color: '#000000',
       borderColor: 'rgb(251, 191, 36)',
     },
     message: {
