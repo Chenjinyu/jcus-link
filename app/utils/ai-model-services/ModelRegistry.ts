@@ -55,7 +55,7 @@ const createDynamicRegistery = () => {
   }
   if (hasAvailableModels('ollama')) {
     registerConfig['ollama'] = createOllama({
-      baseURL: process.env.OLLAMA_API_URL || 'http://localhost:11434',
+      baseURL: process.env.OLLAMA_API_URL || 'http://localhost:11434/api',
     });
   }
   /**

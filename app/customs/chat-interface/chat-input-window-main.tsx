@@ -118,15 +118,16 @@ const ChatInputWindowComponent = () => {
 
   return (
     <div
-      className="w-full h-1/2 md:h-full flex flex-col rounded-xl border shadow-sm overflow-hidden"
+      className="w-full h-screen flex flex-col rounded-xl border shadow-sm overflow-hidden"
       style={{
+        height: 'calc(100vh - 100px)',
         backgroundColor: chatWindowThemeStyle.backgroundColor,
         borderColor: chatWindowThemeStyle.borderColor,
         color: chatWindowThemeStyle.color,
       }}
     >
       {/* Conversation Area */}
-      <Conversation className="overflow-y-auto">
+      <Conversation className="flex-1 min-h-0 overflow-y-auto">
         <ConversationContent className="px-4">
           {messages.length === 0 ? (
             <EmptyState 
