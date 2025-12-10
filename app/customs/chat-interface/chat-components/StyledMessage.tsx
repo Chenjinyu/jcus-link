@@ -82,7 +82,8 @@ export const StyledMessage = ({
           `}
           style={{
             ...themeStyle,
-            ...messageBubbleStyle
+            ...messageBubbleStyle,
+            ...(!isUser && { padding: '12px 16px' }),
           }}
         >
           <Message 

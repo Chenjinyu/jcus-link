@@ -3,10 +3,10 @@
 // =============================================================================
 
 // Theme utilities
-export { 
-  models, 
-  type Model 
-} from '@/app/utils/ai-model-services/types';
+// export { 
+//   models, 
+//   type Model 
+// } from '@/app/utils/ai-model-services/types';
 
 // Components
 export { 

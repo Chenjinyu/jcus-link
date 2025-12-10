@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, FileUIPart } from 'ai';
+import { DefaultChatTransport } from 'ai';
 import { GlobeIcon } from 'lucide-react';
 
 // AI Elements imports
@@ -39,13 +39,13 @@ import {
 import { useTheme, getComponentStyle } from '@/app/context/ThemeContext';
 // Local chat components
 import {
-  models,
   StyledMessage,
   LoadingIndicator,
   EmptyState,
 } from '@/app/customs/chat-interface/chat-components';
-import { envConfig } from '@/app/configs/environment';
-import { getAvailableModels } from '@/app/utils/ai-model-services/types';
+import {
+  getAvailableModels
+} from  '@/app/utils/ai-model-services/ModelRegistry';
 
 // =============================================================================
 // MAIN COMPONENT
@@ -54,14 +54,9 @@ const ChatInputWindowComponent = () => {
   const [text, setText] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // get the first one model as default.
-  const [model, setModel] = useState<string>(models[0].id);
-  
-  // Get available models based on environment
-  const availableModels = getAvailableModels();
-
+  const availableModels = getAvailableModels()
   // Initialize with environment's detail model
-  const [selectedModel, setSelectedModel] = useState<string>(envConfig.defaultModel);
+  const [selectedModel, setSelectedModel] = useState<string>(availableModels[0].id);
   const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
 
   // AI SDK 5.0 useChat hook with transport for custom API endpoint
@@ -78,28 +73,12 @@ const ChatInputWindowComponent = () => {
   const chatWindowThemeStyle = getComponentStyle(theme, 'chatWindow');
   const isLoading = status === 'streaming' || status === 'submitted';
 
-  // Effect to enforce environment-specific model constrainsts
-  useEffect(() => {
-    if (envConfig.enableLocalOllama && !selectedModel.startsWith('ollama/')) {
-      console.warn('[ChatComponent] Local environment detected, switching to Ollama model');
-      setSelectedModel(envConfig.defaultModel);
-    }
-  }, [selectedModel]);
-
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
     const hasAttachments = Boolean(message.files?.length);
 
     if (!(hasText || hasAttachments)) {
       return;
-    }
-
-    if (envConfig.debugMode) {
-      console.log('[ChatComponent] Submitting message:', {
-        environment: envConfig.env,
-        model: selectedModel,
-        hasAttachments: hasAttachments,
-      });
     }
 
     sendMessage(
@@ -120,10 +99,6 @@ const ChatInputWindowComponent = () => {
 
   // Handle regenerate - regenerate the last assistant message
   const handleRegenerate = () => {
-    if (envConfig.debugMode) {
-      console.log('[ChatComponent] Regenerating with model:', selectedModel);
-    }
-
     regenerate({
       body: {
         model: selectedModel,
@@ -137,12 +112,8 @@ const ChatInputWindowComponent = () => {
     textareaRef.current?.focus();
   };
 
-  const handleModelChange = (newModel: string) => {
-    setSelectedModel(newModel);
-
-    if (envConfig.debugMode) {
-      console.log('[ChatComponent] Model changed to:', newModel);
-    } 
+  const handleModelChange = (switchedModel: string) => {
+    setSelectedModel(switchedModel);
   }
 
   return (
@@ -154,19 +125,6 @@ const ChatInputWindowComponent = () => {
         color: chatWindowThemeStyle.color,
       }}
     >
-      {/* Environment Indicator (Debug Mode) */}
-      {envConfig.debugMode && (
-        <div 
-          className="text-xs px-4 py-2 opacity-60 border-b"
-          style={{
-            borderColor: chatWindowThemeStyle.borderColor,
-            backgroundColor: envConfig.env === 'local' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-          }}
-        >
-          Environment: <span className="font-semibold">{envConfig.env}</span>
-        </div>
-      )}
-        
       {/* Conversation Area */}
       <Conversation className="overflow-y-auto">
         <ConversationContent className="px-4">
@@ -232,10 +190,6 @@ const ChatInputWindowComponent = () => {
                   <PromptInputActionAddAttachments />
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
-              <PromptInputSpeechButton
-                onTranscriptionChange={setText}
-                textareaRef={textareaRef}
-              />
               <PromptInputButton
                 onClick={() => setUseWebSearch(!useWebSearch)}
                 variant={useWebSearch ? 'default' : 'ghost'}
@@ -244,8 +198,9 @@ const ChatInputWindowComponent = () => {
                 <GlobeIcon size={16} />
                 <span>Search</span>
               </PromptInputButton>
+              {/* equals to onValueChange={(value) => handleModelChange(value)} */}
               <PromptInputSelect
-                onValueChange={handleModelChange}
+                onValueChange={(value) => handleModelChange(value)}
                 value={selectedModel}
               >
                 <PromptInputSelectTrigger>

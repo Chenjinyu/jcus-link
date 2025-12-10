@@ -8,10 +8,8 @@ import {
 } from 'ai';
 import { z } from 'zod';
 // import { openai } from '@ai-sdk/openai';
-import { initializeModel, isValidModel, getModel  } from '@/app/utils/ai-model-services';
-import { findRelevantContent } from '@/app/lib/embedding';
-import { PROMPT_DEFAULT } from '@/app/configs/config';
 import { envConfig } from '@/app/configs/environment';
+import { register, PROMPT_DEFAULT } from '@/app/utils/ai-model-services/ModelRegistry';
 
 console.log(`[INIT] Chat route loaded in ${envConfig.env} environment`);
 export const maxDuration = 30;
@@ -28,32 +26,6 @@ export async function POST(req: Request) {
     const messages = body.messages as UIMessage[];
     let selectedModel = body.selectedModel || envConfig.defaultModel;
     const webSearch = body.webSearch || false;
-
-    // In local environment, force use Ollama models
-    if (envConfig.enableLocalOllama && !selectedModel.startsWith('ollama/')) {
-      console.warn('[CHAT] Forcing Ollama model in local environment');
-      selectedModel = envConfig.defaultModel;
-    }
-    if (envConfig.debugMode) {
-      console.log('[CHAT] Extracted:', {
-        messageCount: messages?.length,
-        selectedModel,
-        environment: envConfig.env,
-      });
-    }
-
-    // Validate model
-    if (!isValidModel(selectedModel)) {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid model',
-          details: `Model "${selectedModel}" is not available in ${envConfig.env} environment`,
-        }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-    // Initialize model
-    const model = getModel(selectedModel);
 
     // // Check for attachments in messages
     // if (messages.length > 0) {
@@ -126,7 +98,7 @@ export async function POST(req: Request) {
     // Model mapping
 
     const result = streamText({
-      model: initializeModel(selectedModel),
+      model: register.languageModel(selectedModel),
       messages: convertToModelMessages(messages),
       stopWhen: stepCountIs(5),
       system: PROMPT_DEFAULT,
