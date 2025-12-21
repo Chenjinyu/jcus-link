@@ -8,7 +8,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.string().min(1),
-    
+    MCP_SERVER_URL: z.string().url().default("http://localhost:8080/mcp"),
   },
   client: {
     // NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),
