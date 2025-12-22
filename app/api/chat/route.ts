@@ -10,15 +10,22 @@ import { z } from 'zod';
 // import { openai } from '@ai-sdk/openai';
 import { envConfig } from '@/app/configs/environment';
 import { register, PROMPT_DEFAULT } from '@/app/utils/ai-model-services/ModelRegistry';
+import {
+  uploadJobDescriptionToMCP,
+  searchMatchingResumes,
+  analyzeJobDescription,
+  generateResume,
+  selectMCPToolsForQuery,
+} from '@/app/utils/mcp-client-sdk';
 
 console.log(`[INIT] Chat route loaded in ${envConfig.env} environment`);
-export const maxDuration = 30;
+export const maxDuration = 60; // Increased for MCP operations
 
 export async function POST(req: Request) {
   if (envConfig.debugMode) {
     console.log(`[CHAT] POST /api/chat called in ${envConfig.env} environment`);
   }
-  
+
   try {
     const body = await req.json();
     console.log('[DEBUG] Request body keys:', Object.keys(body));
@@ -27,126 +34,230 @@ export async function POST(req: Request) {
     let selectedModel = body.selectedModel || envConfig.defaultModel;
     const webSearch = body.webSearch || false;
 
-    // // Check for attachments in messages
-    // if (messages.length > 0) {
-    //   const lastMessage = messages[messages.length - 1];
-      
-    //   // Access attachments from the message data structure
-    //   // only check the last message of attachments.
-    //   const attachments = (lastMessage as any).experimental_attachments || [];
-      
-    //   console.log('[DEBUG] Last message attachments:', {
-    //     hasAttachments: attachments.length > 0,
-    //     attachmentCount: attachments.length,
-    //   });
+    if (messages.length == 0) {
+      throw new Error('No messages provided');
+    }
+    // Get the last user message to analyze for MCP tool selection
+    const lastUserMessage = messages
+      .filter((m) => m.role === 'user')
+      .pop();
 
-    //   // Process attachments if present
-    //   if (attachments.length > 0) {
-    //     for (const attachment of attachments) {
-    //       console.log('[DEBUG] Processing attachment:', {
-    //         name: attachment.name,
-    //         contentType: attachment.contentType,
-    //         size: typeof attachment.data === 'string' 
-    //           ? attachment.data.length 
-    //           : attachment.data?.length || 'unknown',
-    //       });
+    const attachments = (lastUserMessage as any)?.experimental_attachments || [];
 
-    //       try {
-    //         // Handle file based on type
-    //         if (attachment.contentType?.startsWith('image/')) {
-    //           console.log('[DEBUG] Image attachment detected:', attachment.name);
-    //           // Process image files
-    //           // You can save, analyze, or process the image here
-              
-    //         } else if (attachment.contentType?.startsWith('text/')) {
-    //           console.log('[DEBUG] Text attachment detected:', attachment.name);
-    //           // Process text files
-    //           const textContent = typeof attachment.data === 'string' 
-    //             ? attachment.data 
-    //             : Buffer.from(attachment.data).toString('utf-8');
-    //           console.log('[DEBUG] Text content preview:', textContent.substring(0, 200));
-              
-    //           // Example: Save to knowledge base
-    //           if (textContent) {
-    //             await createResource({ content: textContent });
-    //           }
-              
-    //         } else if (attachment.contentType === 'application/pdf') {
-    //           console.log('[DEBUG] PDF attachment detected:', attachment.name);
-    //           // Process PDF files
-    //           // You might want to use a PDF parser library here
-              
-    //         } else {
-    //           console.log('[DEBUG] Unknown attachment type:', attachment.contentType);
-    //         }
-    //       } catch (attachmentError) {
-    //         console.error('[ERROR] Failed to process attachment:', attachmentError);
-    //       }
-    //     }
-    //   }
-    // }
+    console.log('[DEBUG] Last User Message Attachments: ', {
+      hasAttachments: attachments.length > 0,
+      attachmentCount: attachments.length,
+    });
 
-    // // Validate messages
-    // if (!messages || !Array.isArray(messages) || messages.length === 0) {
-    //   console.error('[ERROR] Invalid messages format');
-    //   return new Response(
-    //     JSON.stringify({ error: 'Messages must be an array' }),
-    //     { status: 400, headers: { 'Content-Type': 'application/json' } }
-    //   );
-    // }
+    const userQuery = lastUserMessage?.parts
+      .filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join(' ') || '';
+    // const userQuery = lastUserMessage?.parts?.toString() || ''; 
 
-    // Model mapping
+    // Intelligently select MCP tools based on user query
+    const mcpToolSelection = await selectMCPToolsForQuery(userQuery);
+
+    if (envConfig.debugMode) {
+      console.log('[MCP] Tool selection:', mcpToolSelection);
+    }
+
+    // Check for file attachments in the last message
+    let hasJobDescriptionFiles = false;
+    const uploadedJobIds: string[] = [];
+
+    if (lastUserMessage && (lastUserMessage as any).files?.length > 0) {
+      const files = (lastUserMessage as any).files;
+      hasJobDescriptionFiles = true;
+
+      // Process files that look like job descriptions
+      for (const file of files) {
+        try {
+          // Check if file is a job description type (PDF, DOCX, etc.)
+          const isJobDescriptionFile =
+            file.mediaType?.includes('pdf') ||
+            file.mediaType?.includes('word') ||
+            file.mediaType?.includes('text') ||
+            file.mediaType?.includes('html') ||
+            file.mediaType?.includes('xml') ||
+            file.filename?.match(/\.(pdf|doc|docx|txt|md|html|xml)$/i);
+
+          if (isJobDescriptionFile) {
+            console.log(`[MCP] Processing job description file: ${file.filename}`);
+
+            // Extract file data from data URL if present
+            let fileData: Buffer | string = '';
+            let inputType: 'text' | 'file' | 'url' = 'file';
+
+            if (file.url && file.url.startsWith('data:')) {
+              // Extract base64 data from data URL
+              const base64Data = file.url.split(',')[1];
+              fileData = Buffer.from(base64Data, 'base64');
+            } else if (file.url && (file.url.startsWith('http://') || file.url.startsWith('https://'))) {
+              inputType = 'url';
+              fileData = file.url;
+            } else {
+              // Try to get text content if it's a text file
+              if (file.mediaType?.startsWith('text/')) {
+                inputType = 'text';
+                fileData = file.url || '';
+              } else {
+                continue; // Skip if we can't process it
+              }
+            }
+
+            // Upload to MCP server
+            const uploadResult = await uploadJobDescriptionToMCP(
+              fileData,
+              file.filename || 'job_description',
+              inputType
+            );
+
+            if (uploadResult.job_id) {
+              uploadedJobIds.push(uploadResult.job_id);
+              console.log(`[MCP] Successfully uploaded job description: ${uploadResult.job_id}`);
+            }
+          }
+        } catch (fileError) {
+          console.error('[MCP] Error processing file:', fileError);
+        }
+      }
+    }
+
+    // Build system prompt with MCP context
+    let systemPrompt = PROMPT_DEFAULT;
+    if (hasJobDescriptionFiles && uploadedJobIds.length > 0) {
+      systemPrompt += `\n\nYou have access to ${uploadedJobIds.length} uploaded job description(s) via MCP tools. Use the MCP tools to analyze, search, and generate resumes based on these job descriptions.`;
+    }
+
+    // Define MCP tools for the AI to use
+    const mcpTools: Record<string, any> = {};
+
+    // Add upload_job_description tool if job description files were detected
+    if (mcpToolSelection.tools.includes('upload_job_description') || hasJobDescriptionFiles) {
+      mcpTools.uploadJobDescription = tool({
+        description: `Upload a job description from text, file (base64), or URL to the MCP server for processing and matching. Use this when the user provides a job description or job posting.`,
+        inputSchema: z.object({
+          input_data: z.string().describe('Job description text, base64-encoded file, or URL'),
+          input_type: z.enum(['text', 'file', 'url']).describe('Type of input'),
+          filename: z.string().optional().describe('Filename (required for file type)'),
+        }),
+        execute: async ({ input_data, input_type, filename }) => {
+          try {
+            const result = await uploadJobDescriptionToMCP(
+              input_data,
+              filename || 'job_description',
+              input_type
+            );
+            return result;
+          } catch (error) {
+            return {
+              error: error instanceof Error ? error.message : 'Failed to upload job description'
+            };
+          }
+        },
+      });
+    }
+
+    // Add search_matching_resumes tool
+    if (mcpToolSelection.tools.includes('search_matching_resumes')) {
+      mcpTools.searchMatchingResumes = tool({
+        description: `Search for resumes that match a job description using vector similarity search. Use this to find candidates from the developer background database stored in Supabase.`,
+        inputSchema: z.object({
+          job_description: z.string().describe('The job description text to match against'),
+          top_k: z.number().int().min(1).max(20).default(5).describe('Number of top matches to return'),
+        }),
+        execute: async ({ job_description, top_k }) => {
+          try {
+            const result = await searchMatchingResumes(job_description, top_k);
+            return result;
+          } catch (error) {
+            return {
+              error: error instanceof Error ? error.message : 'Failed to search matching resumes'
+            };
+          }
+        },
+      });
+    }
+
+    // Add analyze_job_description tool
+    if (mcpToolSelection.tools.includes('analyze_job_description')) {
+      mcpTools.analyzeJobDescription = tool({
+        description: `Analyze a job description to extract key requirements, skills, experience level, and responsibilities. Use this to understand what a job posting is looking for.`,
+        inputSchema: z.object({
+          job_description: z.string().describe('The job description text to analyze'),
+        }),
+        execute: async ({ job_description }) => {
+          try {
+            const result = await analyzeJobDescription(job_description);
+            return result;
+          } catch (error) {
+            return {
+              error: error instanceof Error ? error.message : 'Failed to analyze job description'
+            };
+          }
+        },
+      });
+    }
+
+    // Add generate_resume tool
+    if (mcpToolSelection.tools.includes('generate_resume')) {
+      mcpTools.generateResume = tool({
+        description: `Generate an optimized resume based on a job description and matched candidate profiles from the database. Use this when the user wants to create or update a resume tailored to a specific job.`,
+        inputSchema: z.object({
+          job_description: z.string().describe('The job description to tailor the resume for'),
+          matched_resumes: z.array(z.any()).describe('List of matched resume profiles (from search_matching_resumes tool)'),
+        }),
+        execute: async ({ job_description, matched_resumes }) => {
+          try {
+            const result = await generateResume(job_description, matched_resumes);
+            return { resume: result };
+          } catch (error) {
+            return {
+              error: error instanceof Error ? error.message : 'Failed to generate resume'
+            };
+          }
+        },
+      });
+    }
 
     const result = streamText({
       model: register.languageModel(selectedModel),
       messages: convertToModelMessages(messages),
-      stopWhen: stepCountIs(5),
-      system: PROMPT_DEFAULT,
-      // tools: {
-      //   addResource: tool({
-      //     description: `add a resource to your knowledge base.`,
-      //     inputSchema: z.object({
-      //       content: z.string().describe('the content to add'),
-      //     }),
-      //     execute: async ({ content }) => {
-      //       console.log('[DEBUG] addResource:', content);
-      //       try {
-      //         await createResource({ content });
-      //         return { success: true };
-      //       } catch (error) {
-      //         console.error('[ERROR] addResource:', error);
-      //         return { success: false, error: String(error) };
-      //       }
-      //     },
-      //   }),
-      //   getInformation: tool({
-      //     description: `get information from your knowledge base.`,
-      //     inputSchema: z.object({
-      //       question: z.string().describe('the question'),
-      //     }),
-      //     execute: async ({ question }) => {
-      //       console.log('[DEBUG] getInformation:', question);
-      //       try {
-      //         return await findRelevantContent(question);
-      //       } catch (error) {
-      //         console.error('[ERROR] getInformation:', error);
-      //         return { error: String(error) };
-      //       }
-      //     },
-      //   }),
-      //   ...(webSearch ? {
-      //     webSearch: tool({
-      //       description: `Search the web for current information.`,
-      //       inputSchema: z.object({
-      //         query: z.string().describe('search query'),
-      //       }),
-      //       execute: async ({ query }) => {
-      //         console.log('[DEBUG] webSearch:', query);
-      //         return { message: 'Web search not implemented', query };
-      //       },
-      //     }),
-      //   } : {}),
-      // },
+      stopWhen: stepCountIs(10), // Increased for multi-step MCP operations
+      system: systemPrompt,
+      tools: {
+        ...mcpTools,
+        // Keep existing tools if needed
+        addResource: tool({
+          description: `add a resource to your knowledge base.`,
+          inputSchema: z.object({
+            content: z.string().describe('the content to add'),
+          }),
+          execute: async ({ content }) => {
+            console.log('[DEBUG] addResource:', content);
+            try {
+              await createResource({ content });
+              return { success: true };
+            } catch (error) {
+              console.error('[ERROR] addResource:', error);
+              return { success: false, error: String(error) };
+            }
+          },
+        }),
+        ...(webSearch ? {
+          webSearch: tool({
+            description: `Search the web for current information.`,
+            inputSchema: z.object({
+              query: z.string().describe('search query'),
+            }),
+            execute: async ({ query }) => {
+              console.log('[DEBUG] webSearch:', query);
+              return { message: 'Web search not implemented', query };
+            },
+          }),
+        } : {}),
+      },
     });
 
     console.log('[DEBUG] ✅ Streaming response');
@@ -154,7 +265,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('[ERROR] POST /api/chat:', error);
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    
+
     return new Response(
       JSON.stringify({
         error: 'Internal Server Error',

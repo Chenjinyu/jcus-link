@@ -8,7 +8,7 @@ import { embeddings } from '../../db/schema/embeddings';
 const embeddingModel = openai.embedding('text-embedding-ada-002');
 // const embeddingModel = groq.embedding("text-embedding-3-small");
 
-function getEmbeddingModel(selectedModelName: string) { 
+function getEmbeddingModel(selectedModelName: string) {
 
 }
 
@@ -16,7 +16,8 @@ const generateChunks = (input: string): string[] => {
   return input
     .trim()
     .split('.')
-    .filter(i => i !== '');
+    .map(chunk => chunk.trim()) // Trim each chunk to remove leading/trailing whitespace and newlines
+    .filter(chunk => chunk !== ''); // Filter out empty chunks after trimming
 };
 
 export const generateEmbeddings = async (
@@ -46,9 +47,9 @@ export const findRelevantContent = async (userQuery: string) => {
     userQueryEmbedded,
   )
   console.log('[DEBUG][findRelevantContent] getCosineDistance:', { getCosineDistance })
-  
+
   const similarity = sql<number>`1 - (${getCosineDistance})`;
-  console.log('[DEBUG][findRelevantContent] get the similarity from DB:', {similarity})
+  console.log('[DEBUG][findRelevantContent] get the similarity from DB:', { similarity })
   const similarGuides = await db
     .select({ name: embeddings.content, similarity })
     .from(embeddings)

@@ -51,7 +51,7 @@ export const COMMON_COLOR_STYLE: ThemeConfigType = {
     },
     chatWindow: {
       backgroundColor: 'rgba(2, 2, 2, 1)',
-      color: '#ffffff)',
+      color: '#ffffff',
     },
     message: {
       backgroundColor: '#ffffff',

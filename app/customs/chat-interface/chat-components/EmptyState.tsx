@@ -16,10 +16,10 @@ export const EmptyState = ({ onSuggestionClick }: EmptyStateProps) => {
   const isDark = isDarkTheme(theme as ThemeKeys);
   const themeStyle = getComponentStyle(theme as ThemeKeys, 'emptyMessageState');
   const suggestions = [
-    "What can you help me with?",
-    "Tell me about yourself",
-    "How does this work?",
-    "What are your capabilities?",
+    "What skills does the author have?",
+    "What is the author’s background and experience?",
+    "What kind of working environment does the author prefer?",
+    "What are the author’s strengths and weaknesses?",
   ];
   
   return (
@@ -36,7 +36,7 @@ export const EmptyState = ({ onSuggestionClick }: EmptyStateProps) => {
         Start a conversation
       </h2>
       <p className="text-sm opacity-60 mb-6 text-center max-w-md" style={{ color: themeStyle.color }}>
-        Ask me anything. I&apos;m here to help with questions, tasks, and creative projects.
+        Ask me anything. I&apos;m here to answer the questions you have regard the web author.
       </p>
       
       {/* Suggestions */}

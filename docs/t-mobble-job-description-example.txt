@@ -1,0 +1,85 @@
+At T-Mobile, we invest in YOU!  Our Total Rewards Package ensures that employees get the same big love we give our customers.  All team members receive a competitive base salary and compensation package - this is Total Rewards. Employees enjoy multiple wealth-building opportunities through our annual stock grant, employee stock purchase plan, 401(k), and access to free, year-round money coaches. That’s how we’re UNSTOPPABLE for our employees!
+
+Job Overview
+
+Are you ready for the next chapter in your Uncarrier journey?
+
+If so, our team is looking for a Principal Software Engineer to mentor a team of software engineers, network and systems engineers to craft, implement, and deploy software meeting customer's requirements, scales easily, removes the limitations of traditional networking solutions, and supports deployment. The Principal Software Engineer at times leads or at a minimum is an active participant in architecture and design of various software components and composed on crafting applications that leverage technologies such as virtualization, micro services, SDN, NFV, and Big Data platforms and technologies. We work on technical assignments that are difficult, requiring judgment in resolving issues and/or making recommendations. You'll determine methods and procedures, and we work with assignments requiring considerable judgment and initiative!
+
+We pride ourselves on encouraging a culture of innovation, advocating for agile methodologies, and promoting transparency in all that we do. Join us in embodying the spirit of the 'Un-carrier' and make a tangible impact!
+Job Responsibilities:
+
+Technical Engineering Services
+
+Drives engineering projects and team members by developing software solutions; conducting tests and inspections; preparing reports and calculations. Expected to supervise base through senior level engineers as needed.
+Presents project improvement scenarios to management for consideration.
+Technical Leadership
+
+Monitor and influence relevant industry technologies and standards.
+Present highly technical concepts to both technical and non-technical decision-makers.
+Continuously learns, creates content, and teaches others specific subject areas.
+Informally coaches and contributes to the development of others through mentoring or in-house workshops and learning sessions. Develops engineers across functional teams on technology decisions.
+Influence technology and policy decisions made across the VP organization.
+Understand financial decisions, including NPV and ROI, based on customer experience/business drivers.
+Technology Strategy
+
+Evaluates new and existing technological options that support business goals.
+Understands current technology that supports business goals. Understands system protocols, how systems operate and data flows. Aware of current technology benefits. Expected to independently develop a full software stack. Understands the building blocks, interactions, dependencies, and tools required to complete software and automation work. Independent study of current technology is expected. Interact with system engineers to define system requirements and/or necessary requirements for automation,
+Innovation
+
+Develops, designs, and implements new ideas which utilize new frameworks to improve an existing or new system/process/service.
+Investigative independent study and problem solving for non-routine tasks.
+Analyze existing processes and vendor roadmaps to highlight upcoming technology changes that would make the processes or tools more effective within a given VP function.
+Contributes to the creation of company IPR.
+Technical Writing
+
+Writes advanced documentation, architecture, capabilities, limitations, and advantages for technologies. Creates and modifies clear documentation for new code and systems used.
+Documenting systems designs, presentations, and business requirements for consumption and consideration at the director level.
+Contributes to industry professional norms.
+Contributes to the protection of company IPR.
+
+Education and Work Experience:
+
+Telecom Billing Domain experience (Preferred)
+Experience developing telecom billing customer service management tools (Preferred)
+Bachelor's Degree Computer Science or Engineering (Required)
+7-10 years technical engineering experience. (Required)
+
+Knowledge, Skills and Abilities:
+
+Experience in Oracle and SQL (Required)
+Hands on development experience with C and C++ (Required)
+Tuxedo development (Required)
+PowerBuilder (Preferred)
+Communication (Required)
+Customer Service (Required)
+Analytics (Required)
+Technical Writing (Required)
+
+Licenses and Certifications:
+
+At least 18 years of age
+Legally authorized to work in the United States
+
+Travel:
+Travel Required (Yes/No): Yes
+
+DOT Regulated:
+DOT Regulated Position (Yes/No): No
+Safety Sensitive Position (Yes/No): No
+
+Base Pay Range: $133,500 - $240,700
+Corporate Bonus Target: 20%
+The pay range above is the general base pay range for a successful candidate in the role. The successful candidate’s actual pay will be based on various factors, such as work location, qualifications, and experience, so the actual starting pay will vary within this range.
+
+At T-Mobile, employees in regular, non-temporary roles are eligible for an annual bonus or periodic sales incentive or bonus, based on their role. Most Corporate employees are eligible for a year-end bonus based on company and/or individual performance and which is set at a percentage of the employee’s eligible earnings in the prior year. Certain positions in Customer Care are eligible for monthly bonuses based on individual and/or team performance. To find the pay range for this role based on hiring location, click here.
+At T-Mobile, our benefits exemplify the spirit of One Team, Together! A big part of how we care for one another is working to ensure our benefits evolve to meet the needs of our team members. Full and part-time employees have access to the same benefits when eligible. We cover all of the bases, offering medical, dental and vision insurance, a flexible spending account, 401(k), employee stock grants, employee stock purchase plan, paid time off and up to 12 paid holidays - which total about 4 weeks for new full-time employees and about 2.5 weeks for new part-time employees annually - paid parental and family leave, family building benefits, back-up care, enhanced family support, childcare subsidy, tuition assistance, college coaching, short- and long-term disability, voluntary AD&D coverage, voluntary accident coverage, voluntary life insurance, voluntary disability insurance, and voluntary long-term care insurance. We don't stop there - eligible employees can also receive mobile service & home internet discounts, pet insurance, and access to commuter and transit programs! To learn about T-Mobile’s amazing benefits, check out www.t-mobilebenefits.com.
+
+Never stop growing!
+As part of the T-Mobile team, you know the Un-carrier doesn’t have a corporate ladder–it’s more like a jungle gym of possibilities! We love helping our employees grow in their careers, because it’s that shared drive to aim high that drives our business and our culture forward. By applying for this career opportunity, you’re living our values while investing in your career growth–and we applaud it. You’re unstoppable!
+
+T-Mobile USA, Inc. is an Equal Opportunity Employer. All decisions concerning the employment relationship will be made without regard to age, race, ethnicity, color, religion, creed, sex, sexual orientation, gender identity or expression, national origin, religious affiliation, marital status, citizenship status, veteran status, the presence of any physical or mental disability, or any other status or characteristic protected by federal, state, or local law. Discrimination, retaliation or harassment based upon any of these factors is wholly inconsistent with how we do business and will not be tolerated.
+
+Talent comes in all forms at the Un-carrier. If you are an individual with a disability and need reasonable accommodation at any point in the application or interview process, please let us know by emailing ApplicantAccommodation@t-mobile.com or calling 1-844-873-9500. Please note, this contact channel is not a means to apply for or inquire about a position and we are unable to respond to non-accommodation related requests.
+
+T-Mobile maintains a drug-free workplace.

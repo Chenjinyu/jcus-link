@@ -24,6 +24,13 @@ export default function ArticlePage() {
       excerpt: "Explore how to integrate AI features into your web applications.",
       date: "2024-11-10",
       category: "AI"
+    },
+    {
+      id: 4,
+      title: "Red waves are just a 'Polite suggestion' from a static analysis tool that might not have the full picture.",
+      excerpt: "Explore how to integrate AI features into your web applications.",
+      date: "2024-11-10",
+      category: "AI"
     }
   ];
 
