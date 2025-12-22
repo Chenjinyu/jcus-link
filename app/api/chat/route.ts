@@ -49,11 +49,19 @@ export async function POST(req: Request) {
       attachmentCount: attachments.length,
     });
 
+    /**
+     * Extract text from message parts with proper type narrowing, this is a type guard(type predicate)
+     * parts is likely defined as a union type of { type: 'text' } | { type: 'file' } | { type: 'url' }
+     * It might not issue during dev or debug env.
+     * Extract<> is a typescript utility type that extracts the type from the union type
+     * Extract<typeof part, { type: 'text' }>, result: {type: 'text', text: string}
+     * without Extract<>, will raise type error: part.text does not exist during npm run build.
+     * because typescript does not know .filter() returns a text type from parts.
+     */
     const userQuery = lastUserMessage?.parts
-      .filter(part => part.type === 'text')
+      .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
       .map(part => part.text)
       .join(' ') || '';
-    // const userQuery = lastUserMessage?.parts?.toString() || ''; 
 
     // Intelligently select MCP tools based on user query
     const mcpToolSelection = await selectMCPToolsForQuery(userQuery);
