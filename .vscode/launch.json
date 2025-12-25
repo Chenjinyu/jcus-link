@@ -2,6 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // Debug server-side code, pause server-only files
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",
@@ -15,6 +16,7 @@
       "internalConsoleOptions": "neverOpen"
     },
     {
+      // Debug client-side code, pause browser-only files
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",
@@ -29,7 +31,14 @@
       "skipFiles": [
         "<node_internals>/**",
         "${workspaceFolder}/node_modules/**"
-      ]
+      ],
+      "preLaunchTask": "npm: dev",
+      "timeout": 30000,
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
     },
     {
       "name": "Next.js: debug full stack",
@@ -88,7 +97,13 @@
         "webpack://_N_E/*": "${webRoot}/*",
         "webpack:///./*": "${webRoot}/*"
       },
-      "preLaunchTask": "npm: dev"
+      "preLaunchTask": "npm: dev",
+      "timeout": 30000,
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
     }
   ],
   "compounds": [
