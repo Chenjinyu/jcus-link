@@ -15,7 +15,7 @@ export interface EnvironmentConfig {
  */
 function getCurrentEnvironment(): Environment {
   const env = process.env.NEXT_PUBLIC_ENVIRONMENT || 'local';
-  
+
   if (!['local', 'production'].includes(env)) {
     console.warn(`Unknown environment: ${env}, defaulting to local`);
     return 'local';
@@ -24,7 +24,8 @@ function getCurrentEnvironment(): Environment {
 }
 
 /**
- * Environment-specific configurations
+ * This is default configuration for the AI model to use. 
+ * All avaiable models are defined in the ModelRegistry.ts file.
  */
 const environmentConfigs: Record<Environment, EnvironmentConfig> = {
   local: {
@@ -32,7 +33,7 @@ const environmentConfigs: Record<Environment, EnvironmentConfig> = {
     isDevelopment: true,
     isProduction: false,
     apiUrl: 'http://localhost:3000',
-    defaultModel: 'ollama/llama3', // Use local Ollama for local testing
+    defaultModel: 'ollama/llama3.1:8b', // Use local Ollama for local testing
     enableLocalOllama: true,
     debugMode: true,
   },
@@ -53,7 +54,7 @@ const environmentConfigs: Record<Environment, EnvironmentConfig> = {
 export function getEnvironmentConfig(): EnvironmentConfig {
   const environment = getCurrentEnvironment();
   const config = environmentConfigs[environment];
-  
+
   if (process.env.NODE_ENV === 'development') {
     console.log(`[Environment] Current environment: ${environment}`);
     console.log(`[Environment] Config:`, {
@@ -62,7 +63,7 @@ export function getEnvironmentConfig(): EnvironmentConfig {
       enableLocalOllama: config.enableLocalOllama,
     });
   }
-  
+
   return config;
 }
 
