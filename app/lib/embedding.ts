@@ -1,14 +1,24 @@
 import { embed, embedMany } from 'ai';
 import { groq } from '@ai-sdk/groq';
 import { openai } from '@ai-sdk/openai';
-import { db } from '../../db';
-import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
-import { embeddings } from '../../db/schema/embeddings';
+import { createClient } from '@supabase/supabase-js';
+import { env } from '@/app/lib/env.mjs';
 
 // TODO: the current embedding Model depends on the selection of current model from chat window. 
 // if the user chooses ollama(only for local), then select nomic-embed-text:latest
 // if the user chooses openai, then select openai's embedding model
 const embeddingModel = openai.embedding('text-embedding-ada-002');
+
+const supabase = createClient(
+  env.SUPABASE_URL,
+  env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
+);
 
 function getEmbeddingModel(selectedModelName: string) {
 
@@ -44,28 +54,28 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
 
 export const findRelevantContent = async (userQuery: string) => {
   const userQueryEmbedded = await generateEmbedding(userQuery);
-  const getCosineDistance = cosineDistance(
-    embeddings.embedding,
-    userQueryEmbedded,
-  )
-  console.log('[DEBUG][findRelevantContent] getCosineDistance:', { getCosineDistance })
 
-  const similarity = sql<number>`1 - (${getCosineDistance})`;
-  console.log('[DEBUG][findRelevantContent] get the similarity from DB:', { similarity })
-  const similarGuides = await db
-    .select({ name: embeddings.content, similarity })
-    .from(embeddings)
-    .where(gt(similarity, 0.5))
-    .orderBy(t => desc(t.similarity))
-    .limit(4);
+  const rpcArgs: Record<string, any> = {
+    query_embedding: userQueryEmbedded,
+    match_threshold: 0.5,
+    match_count: 4,
+  };
 
-  // LOG THE RESULT of the db.select() query
-  console.log("[DEBUG] ai.embedding.ts. findRelevantContent (similarGuides):", similarGuides);
-  const simailarJointStr = simailarContent(similarGuides);
-  console.log("[DEBUG]] ai.embedding.ts. findRelevantContent (simailarJointStr):", simailarJointStr);
-  return simailarJointStr;
+  if (env.SUPABASE_SEARCH_USER_ID) {
+    rpcArgs.user_id_filter = env.SUPABASE_SEARCH_USER_ID;
+  }
+
+  const { data, error } = await supabase.rpc('search_similar_content', rpcArgs);
+
+  if (error) {
+    console.error('[DEBUG][findRelevantContent] Supabase RPC error:', error);
+    throw error;
+  }
+
+  const similarChunks = (data || [])
+    .map((row: { chunk_text?: string }) => row.chunk_text)
+    .filter((chunk: string | undefined): chunk is string => Boolean(chunk));
+
+  console.log('[DEBUG] ai.embedding.ts findRelevantContent (similarChunks):', similarChunks);
+  return similarChunks.join('\n');
 };
-
-const simailarContent = (similarGuides: Array<{ name: string; similarity: number }>) => {
-  return similarGuides.map(g => g.name).join('\n');
-}

@@ -9,6 +9,9 @@ export const env = createEnv({
       .default("development"),
     DATABASE_URL: z.string().min(1),
     MCP_SERVER_URL: z.string().url().default("http://localhost:8080/mcp"),
+    SUPABASE_URL: z.string().url(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+    SUPABASE_SEARCH_USER_ID: z.string().optional(),
   },
   client: {
     // NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),
