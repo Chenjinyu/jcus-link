@@ -47,11 +47,7 @@ async function getMCPClient(): Promise<any> {
   await mcpClient.connect(transport);
   await mcpClient.initialize();
   isInitialized = true;
-  
-  throw new Error(
-    'MCP SDK not installed. Run: npm install @modelcontextprotocol/sdk\n' +
-    'Then uncomment the implementation in app/utils/mcp-client-sdk.ts'
-  );
+  return mcpClient;
 }
 
 /**
@@ -94,14 +90,21 @@ export async function uploadJobDescriptionToMCP(
  */
 export async function searchMatchingResumes(
   jobDescription: string,
-  topK: number = 5
+  topK: number = 5,
+  jobId?: string
 ): Promise<{ matches: any[]; total_found: number; job_id: string }> {
   const client = await getMCPClient();
-  
-  const result = await client.callTool('search_matching_resumes', {
-    job_description: jobDescription,
+
+  const payload: Record<string, any> = {
     top_k: topK,
-  });
+  };
+  if (jobDescription) {
+    payload.job_description = jobDescription;
+  } else if (jobId) {
+    payload.job_id = jobId;
+  }
+
+  const result = await client.callTool('search_matching_resumes', payload);
 
   if (result.content && result.content.length > 0) {
     const textContent = result.content.find((c: any) => c.type === 'text');
@@ -139,15 +142,22 @@ export async function analyzeJobDescription(jobDescription: string): Promise<any
  */
 export async function generateResume(
   jobDescription: string,
-  matchedResumes: any[]
+  matchedResumes: any[],
+  jobId?: string
 ): Promise<string> {
   const client = await getMCPClient();
-  
-  const result = await client.callTool('generate_resume', {
-    job_description: jobDescription,
+
+  const payload: Record<string, any> = {
     matched_resumes: matchedResumes,
     stream: false,
-  });
+  };
+  if (jobDescription) {
+    payload.job_description = jobDescription;
+  } else if (jobId) {
+    payload.job_id = jobId;
+  }
+
+  const result = await client.callTool('generate_resume', payload);
 
   if (result.content && result.content.length > 0) {
     const textContent = result.content.find((c: any) => c.type === 'text');
@@ -248,4 +258,3 @@ export async function selectMCPToolsForQuery(query: string): Promise<{
     reasoning,
   };
 }
-

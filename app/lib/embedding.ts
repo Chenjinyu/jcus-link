@@ -5,8 +5,10 @@ import { db } from '../../db';
 import { cosineDistance, desc, gt, sql } from 'drizzle-orm';
 import { embeddings } from '../../db/schema/embeddings';
 
+// TODO: the current embedding Model depends on the selection of current model from chat window. 
+// if the user chooses ollama(only for local), then select nomic-embed-text:latest
+// if the user chooses openai, then select openai's embedding model
 const embeddingModel = openai.embedding('text-embedding-ada-002');
-// const embeddingModel = groq.embedding("text-embedding-3-small");
 
 function getEmbeddingModel(selectedModelName: string) {
 

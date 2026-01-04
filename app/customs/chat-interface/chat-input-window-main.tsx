@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { GlobeIcon } from 'lucide-react';
+import { nanoid } from '@/app/utils/nanoid';
+import { JOB_MATCH_PROMPT_TOKEN } from '@/app/constants';
 
 // AI Elements imports
 import {
@@ -53,6 +55,7 @@ import {
 const ChatInputWindowComponent = () => {
   const [text, setText] = useState<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const conversationIdRef = useRef<string>(nanoid());
 
   const availableModels = getAvailableModels()
   // Initialize with environment's detail model
@@ -90,6 +93,7 @@ const ChatInputWindowComponent = () => {
         body: {
           selectedModel: selectedModel,
           webSearch: useWebSearch,
+          conversationId: conversationIdRef.current,
         },
       }
     );
@@ -103,6 +107,7 @@ const ChatInputWindowComponent = () => {
       body: {
         model: selectedModel,
         webSearch: useWebSearch,
+        conversationId: conversationIdRef.current,
       }
     });
   };
@@ -115,6 +120,35 @@ const ChatInputWindowComponent = () => {
   const handleModelChange = (switchedModel: string) => {
     setSelectedModel(switchedModel);
   }
+  
+  const handleJobMatchDecision = (decision: 'yes' | 'no') => {
+    if (isLoading) {
+      return;
+    }
+    sendMessage(
+      { text: decision },
+      {
+        body: {
+          selectedModel: selectedModel,
+          webSearch: useWebSearch,
+          conversationId: conversationIdRef.current,
+        },
+      }
+    );
+  };
+
+  const jobMatchPromptIds = useMemo(() => {
+    return new Set(
+      messages
+        .filter((message) => message.role === 'assistant')
+        .filter((message) =>
+          message.parts.some(
+            (part) => part.type === 'text' && part.text?.includes(JOB_MATCH_PROMPT_TOKEN)
+          )
+        )
+        .map((message) => message.id)
+    );
+  }, [messages]);
 
   return (
     <div
@@ -136,13 +170,42 @@ const ChatInputWindowComponent = () => {
           ) : (
             <>
               {messages.map((message, index) => (
-                <StyledMessage
-                  key={message.id}
-                  message={message}
-                  isLatest={index === messages.length - 1 && message.role === 'assistant'}
-                  themeStyle={messageThemeStyle}
-                  onRegenerate={handleRegenerate}
-                />
+                <div key={message.id} className="flex flex-col">
+                  <StyledMessage
+                    message={message}
+                    isLatest={index === messages.length - 1 && message.role === 'assistant'}
+                    themeStyle={messageThemeStyle}
+                    onRegenerate={handleRegenerate}
+                  />
+                  {jobMatchPromptIds.has(message.id) && (
+                    <div className="flex gap-2 pl-12">
+                      <button
+                        type="button"
+                        className="rounded-full border px-4 py-1 text-sm transition hover:opacity-80"
+                        style={{
+                          borderColor: chatWindowThemeStyle.borderColor,
+                          color: chatWindowThemeStyle.color,
+                        }}
+                        onClick={() => handleJobMatchDecision('yes')}
+                        disabled={isLoading}
+                      >
+                        Yes, update my resume
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded-full border px-4 py-1 text-sm transition hover:opacity-80"
+                        style={{
+                          borderColor: chatWindowThemeStyle.borderColor,
+                          color: chatWindowThemeStyle.color,
+                        }}
+                        onClick={() => handleJobMatchDecision('no')}
+                        disabled={isLoading}
+                      >
+                        No, thanks
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
               {isLoading && messages[messages.length - 1]?.role === 'user' && (
                 <LoadingIndicator theme={theme} />

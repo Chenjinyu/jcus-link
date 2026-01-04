@@ -12,6 +12,7 @@ import { MessageRole } from '@/app/types';
 import { Avatar } from '@/app/customs/chat-interface/chat-components/Avatar';
 import { RoleLabel } from '@/app/customs/chat-interface/chat-components/RoleLabel';
 import { ThemeColorStyle } from '@/app/context/ThemeContext';
+import { JOB_MATCH_PROMPT_TOKEN } from '@/app/constants';
 
 // =============================================================================
 // STYLED MESSAGE WRAPPER
@@ -38,7 +39,8 @@ export const StyledMessage = ({
   const isUser = message.role === 'user';
   const textContent = message.parts
     .filter(part => part.type === 'text')
-    .map(part => part.text)
+    .map(part => (part.text || '').replace(JOB_MATCH_PROMPT_TOKEN, '').trim())
+    .filter(Boolean)
     .join('\n');
   
   // Handle copy action
@@ -98,11 +100,19 @@ export const StyledMessage = ({
               {message.parts.map((part, i) => {
                 switch (part.type) {
                   case 'text':
-                    return (
-                      <MessageResponse key={`${message.id}-${i}`}>
-                        {part.text}
-                      </MessageResponse>
-                    );
+                    {
+                      const cleanedText = (part.text || '')
+                        .replace(JOB_MATCH_PROMPT_TOKEN, '')
+                        .trim();
+                      if (!cleanedText) {
+                        return null;
+                      }
+                      return (
+                        <MessageResponse key={`${message.id}-${i}`}>
+                          {cleanedText}
+                        </MessageResponse>
+                      );
+                    }
                   default:
                     return null;
                 }

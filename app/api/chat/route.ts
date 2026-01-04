@@ -10,6 +10,8 @@ import { z } from 'zod';
 // import { openai } from '@ai-sdk/openai';
 import { envConfig } from '@/app/configs/environment';
 import { register, PROMPT_DEFAULT } from '@/app/utils/ai-model-services/ModelRegistry';
+import { findRelevantContent } from '@/app/lib/embedding';
+import { JOB_MATCH_COMMAND, JOB_MATCH_PROMPT_TOKEN } from '@/app/constants';
 import {
   uploadJobDescriptionToMCP,
   searchMatchingResumes,
@@ -20,6 +22,84 @@ import {
 
 console.log(`[INIT] Chat route loaded in ${envConfig.env} environment`);
 export const maxDuration = 60; // Increased for MCP operations
+
+const jobMatchSessions = new Map<
+  string,
+  {
+    jobDescription: string;
+    matches: any[];
+    uploadedJobIds: string[];
+  }
+>();
+
+const normalizeDecision = (input: string): 'yes' | 'no' | null => {
+  const normalized = input.trim().toLowerCase();
+  if (normalized === 'yes' || normalized === 'y') {
+    return 'yes';
+  }
+  if (normalized === 'no' || normalized === 'n') {
+    return 'no';
+  }
+  return null;
+};
+
+const extractTextFromDataUrl = (dataUrl: string): string | null => {
+  if (!dataUrl.startsWith('data:')) {
+    return null;
+  }
+  const [meta, data] = dataUrl.split(',');
+  if (!meta || data == null) {
+    return null;
+  }
+  const isBase64 = meta.includes(';base64');
+  try {
+    return isBase64 ? Buffer.from(data, 'base64').toString('utf8') : decodeURIComponent(data);
+  } catch (error) {
+    console.warn('[CHAT] Failed to decode data URL text:', error);
+    return null;
+  }
+};
+
+const extractMatchScore = (match: any): number | null => {
+  const rawScore =
+    match?.similarity ??
+    match?.score ??
+    match?.match_score ??
+    match?.match_rate ??
+    match?.similarity_score ??
+    null;
+  if (typeof rawScore !== 'number' || Number.isNaN(rawScore)) {
+    return null;
+  }
+  const normalized = rawScore <= 1 ? rawScore * 100 : rawScore;
+  return Math.max(0, Math.min(100, Math.round(normalized)));
+};
+
+const formatMatchSummary = (matches: any[]): { summary: string; topRate: number | null } => {
+  if (!Array.isArray(matches) || matches.length === 0) {
+    return {
+      summary: 'No matching resumes were found for the uploaded job description.',
+      topRate: null,
+    };
+  }
+
+  const topMatches = matches.slice(0, 5).map((match, index) => {
+    const name =
+      match?.name ??
+      match?.candidate_name ??
+      match?.title ??
+      match?.id ??
+      `Candidate ${index + 1}`;
+    const score = extractMatchScore(match);
+    return score === null ? `- ${name}` : `- ${name}: ${score}% match`;
+  });
+
+  const topRate = extractMatchScore(matches[0]);
+  return {
+    summary: `Top matches:\n${topMatches.join('\n')}`,
+    topRate,
+  };
+};
 
 export async function POST(req: Request) {
   if (envConfig.debugMode) {
@@ -33,6 +113,7 @@ export async function POST(req: Request) {
     const messages = body.messages as UIMessage[];
     let selectedModel = body.selectedModel || envConfig.defaultModel;
     const webSearch = body.webSearch || false;
+    const conversationId = body.conversationId || 'default';
 
     if (messages.length == 0) {
       throw new Error('No messages provided');
@@ -62,6 +143,53 @@ export async function POST(req: Request) {
       .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
       .map(part => part.text)
       .join(' ') || '';
+
+    const trimmedQuery = userQuery.trim();
+    const isJobMatchCommand = trimmedQuery.toLowerCase().startsWith(JOB_MATCH_COMMAND);
+    const jobMatchPayload = isJobMatchCommand
+      ? trimmedQuery.slice(JOB_MATCH_COMMAND.length).trim()
+      : trimmedQuery;
+    const decision = normalizeDecision(jobMatchPayload);
+
+    if (decision && jobMatchSessions.has(conversationId)) {
+      const session = jobMatchSessions.get(conversationId);
+      if (!session) {
+        throw new Error('Job match session data not found');
+      }
+
+      if (decision === 'no') {
+        jobMatchSessions.delete(conversationId);
+        const declineResponse = streamText({
+          model: register.languageModel(selectedModel),
+          messages: convertToModelMessages(messages),
+          system: `${PROMPT_DEFAULT}\n\nThe user declined resume generation. Respond politely and ask if they need anything else.`,
+        });
+        return declineResponse.toUIMessageStreamResponse();
+      }
+
+      try {
+        const resume = await generateResume(
+          session.jobDescription,
+          session.matches,
+          session.uploadedJobIds[0]
+        );
+        jobMatchSessions.delete(conversationId);
+        const resumeResponse = streamText({
+          model: register.languageModel(selectedModel),
+          messages: convertToModelMessages(messages),
+          system: `${PROMPT_DEFAULT}\n\nProvide the updated resume below without altering its content. Keep the introduction to one short sentence.\n\nResume:\n${resume}`,
+        });
+        return resumeResponse.toUIMessageStreamResponse();
+      } catch (resumeError) {
+        console.error('[MCP] Failed to generate resume:', resumeError);
+        const failureResponse = streamText({
+          model: register.languageModel(selectedModel),
+          messages: convertToModelMessages(messages),
+          system: `${PROMPT_DEFAULT}\n\nExplain that resume generation failed and ask the user to try again.`,
+        });
+        return failureResponse.toUIMessageStreamResponse();
+      }
+    }
 
     // Intelligently select MCP tools based on user query
     const mcpToolSelection = await selectMCPToolsForQuery(userQuery);
@@ -132,8 +260,85 @@ export async function POST(req: Request) {
       }
     }
 
+    if (isJobMatchCommand) {
+      const files = (lastUserMessage as any)?.files || [];
+      let jobDescriptionText = jobMatchPayload;
+
+      if (!jobDescriptionText && files.length > 0) {
+        for (const file of files) {
+          const isTextFile = file.mediaType?.startsWith('text/') || file.filename?.match(/\.(txt|md|html|xml)$/i);
+          if (!isTextFile) {
+            continue;
+          }
+
+          if (typeof file.url === 'string') {
+            const extractedText = extractTextFromDataUrl(file.url) || file.url;
+            if (extractedText.trim()) {
+              jobDescriptionText = extractedText.trim();
+              break;
+            }
+          }
+        }
+      }
+
+      if (!jobDescriptionText && uploadedJobIds.length === 0) {
+        const missingInputResponse = streamText({
+          model: register.languageModel(selectedModel),
+          messages: convertToModelMessages(messages),
+          system: `${PROMPT_DEFAULT}\n\nThe user requested /job_match but did not provide a job description. Ask them to paste the job description text or upload a file.`,
+        });
+        return missingInputResponse.toUIMessageStreamResponse();
+      }
+
+      let matchResults: { matches: any[]; total_found: number; job_id: string } | null = null;
+      const jobIdForSearch = !jobDescriptionText && uploadedJobIds.length > 0 ? uploadedJobIds[0] : undefined;
+      if (jobDescriptionText || jobIdForSearch) {
+        try {
+          matchResults = await searchMatchingResumes(jobDescriptionText, 5, jobIdForSearch);
+        } catch (matchError) {
+          console.error('[MCP] Failed to search matching resumes:', matchError);
+        }
+      }
+
+      if (matchResults) {
+        jobMatchSessions.set(conversationId, {
+          jobDescription: jobDescriptionText,
+          matches: matchResults.matches || [],
+          uploadedJobIds,
+        });
+      }
+
+      const { summary, topRate } = formatMatchSummary(matchResults?.matches || []);
+      const matchSummaryText = [
+        topRate !== null
+          ? `Best overall match: ${topRate}%`
+          : 'No match score was available yet.',
+        summary,
+        `Would you like me to generate an updated resume tailored to this job?`,
+      ].join('\n');
+
+      const jobMatchResponse = streamText({
+        model: register.languageModel(selectedModel),
+        messages: convertToModelMessages(messages),
+        system: `${PROMPT_DEFAULT}\n\nYou are responding to a /job_match request. Use the following match data:\n${matchSummaryText}\n\nRespond with that information, keep it concise, and include the token ${JOB_MATCH_PROMPT_TOKEN} on its own line at the end.`,
+      });
+      return jobMatchResponse.toUIMessageStreamResponse();
+    }
+
+    let knowledgeBaseContext = '';
+    if (userQuery.trim()) {
+      try {
+        knowledgeBaseContext = await findRelevantContent(userQuery);
+      } catch (error) {
+        console.warn('[CHAT] Similarity search failed:', error);
+      }
+    }
+
     // Build system prompt with MCP context
     let systemPrompt = PROMPT_DEFAULT;
+    if (knowledgeBaseContext) {
+      systemPrompt += `\n\nRelevant knowledge base context:\n${knowledgeBaseContext}\n\nUse this context to answer the user when relevant.`;
+    }
     if (hasJobDescriptionFiles && uploadedJobIds.length > 0) {
       systemPrompt += `\n\nYou have access to ${uploadedJobIds.length} uploaded job description(s) via MCP tools. Use the MCP tools to analyze, search, and generate resumes based on these job descriptions.`;
     }
@@ -265,6 +470,16 @@ export async function POST(req: Request) {
             },
           }),
         } : {}),
+        getInformation: tool({
+          description: `Search the Supabase knowledge base for relevant context when the user asks for information.`,
+          inputSchema: z.object({
+            question: z.string().describe('The user question to search for'),
+          }),
+          execute: async ({ question }) => {
+            const result = await findRelevantContent(question);
+            return result;
+          },
+        }),
       },
     });
 

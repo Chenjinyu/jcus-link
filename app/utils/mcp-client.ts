@@ -343,13 +343,18 @@ export async function uploadJobDescriptionToMCP(
  */
 export async function searchMatchingResumes(
   jobDescription: string,
-  topK: number = 5
+  topK: number = 5,
+  jobId?: string
 ): Promise<{ matches: any[]; total_found: number; job_id: string }> {
   try {
-    const result = await callMCPTool('search_matching_resumes', {
-      job_description: jobDescription,
-      top_k: topK,
-    });
+    const payload: Record<string, any> = { top_k: topK };
+    if (jobDescription) {
+      payload.job_description = jobDescription;
+    } else if (jobId) {
+      payload.job_id = jobId;
+    }
+
+    const result = await callMCPTool('search_matching_resumes', payload);
 
     const parsed = JSON.parse(result);
     return parsed;
@@ -381,14 +386,21 @@ export async function analyzeJobDescription(jobDescription: string): Promise<any
  */
 export async function generateResume(
   jobDescription: string,
-  matchedResumes: any[]
+  matchedResumes: any[],
+  jobId?: string
 ): Promise<string> {
   try {
-    const result = await callMCPTool('generate_resume', {
-      job_description: jobDescription,
+    const payload: Record<string, any> = {
       matched_resumes: matchedResumes,
       stream: false,
-    });
+    };
+    if (jobDescription) {
+      payload.job_description = jobDescription;
+    } else if (jobId) {
+      payload.job_id = jobId;
+    }
+
+    const result = await callMCPTool('generate_resume', payload);
 
     return result; // This returns markdown resume text
   } catch (error) {
@@ -485,4 +497,3 @@ export async function selectMCPToolsForQuery(query: string): Promise<{
     reasoning,
   };
 }
-
