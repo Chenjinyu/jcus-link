@@ -60,7 +60,6 @@ const ChatInputWindowComponent = () => {
   const availableModels = getAvailableModels()
   // Initialize with environment's detail model
   const [selectedModel, setSelectedModel] = useState<string>(availableModels[0].id);
-  const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
 
   // AI SDK 5.0 useChat hook with transport for custom API endpoint
   const { messages, status, sendMessage, regenerate, stop } = useChat({
@@ -92,7 +91,6 @@ const ChatInputWindowComponent = () => {
       {
         body: {
           selectedModel: selectedModel,
-          webSearch: useWebSearch,
           conversationId: conversationIdRef.current,
         },
       }
@@ -106,7 +104,6 @@ const ChatInputWindowComponent = () => {
     regenerate({
       body: {
         model: selectedModel,
-        webSearch: useWebSearch,
         conversationId: conversationIdRef.current,
       }
     });
@@ -130,7 +127,6 @@ const ChatInputWindowComponent = () => {
       {
         body: {
           selectedModel: selectedModel,
-          webSearch: useWebSearch,
           conversationId: conversationIdRef.current,
         },
       }
@@ -254,14 +250,6 @@ const ChatInputWindowComponent = () => {
                   <PromptInputActionAddAttachments />
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
-              <PromptInputButton
-                onClick={() => setUseWebSearch(!useWebSearch)}
-                variant={useWebSearch ? 'default' : 'ghost'}
-                className={useWebSearch ? 'bg-violet-500 hover:bg-violet-600 text-white' : ''}
-              >
-                <GlobeIcon size={16} />
-                <span>Search</span>
-              </PromptInputButton>
               {/* equals to onValueChange={(value) => handleModelChange(value)} */}
               <PromptInputSelect
                 onValueChange={(value) => handleModelChange(value)}

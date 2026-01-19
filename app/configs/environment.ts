@@ -42,7 +42,7 @@ const environmentConfigs: Record<Environment, EnvironmentConfig> = {
     isDevelopment: false,
     isProduction: true,
     apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://jcus.link',
-    defaultModel: 'openai/gpt-4o',
+    defaultModel: 'google/gemini-2.0-flash',
     enableLocalOllama: false,
     debugMode: false,
   }

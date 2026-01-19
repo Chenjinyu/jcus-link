@@ -4,7 +4,7 @@ import {
   NewResourceParams,
   insertResourceSchema,
   resources,
-} from '@/db/schema/resources';
+} from '@/unused_db/schema/resources';
 import { db } from '..';
 import { generateEmbeddings } from '../../app/lib/embedding';
 import { embeddings as embeddiingsTable } from '@/db/schema/embeddings';
