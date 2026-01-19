@@ -1,4 +1,3 @@
-import { createResource } from '@/db/actions/resources';
 import {
   convertToModelMessages,
   streamText,
@@ -10,7 +9,6 @@ import { z } from 'zod';
 // import { openai } from '@ai-sdk/openai';
 import { envConfig } from '@/app/configs/environment';
 import { register, PROMPT_DEFAULT } from '@/app/utils/ai-model-services/ModelRegistry';
-import { findRelevantContent } from '@/app/lib/embedding';
 import { JOB_MATCH_COMMAND, JOB_MATCH_PROMPT_TOKEN } from '@/app/constants';
 import {
   uploadJobDescriptionToMCP,
@@ -151,46 +149,6 @@ export async function POST(req: Request) {
       : trimmedQuery;
     const decision = normalizeDecision(jobMatchPayload);
 
-    if (decision && jobMatchSessions.has(conversationId)) {
-      const session = jobMatchSessions.get(conversationId);
-      if (!session) {
-        throw new Error('Job match session data not found');
-      }
-
-      if (decision === 'no') {
-        jobMatchSessions.delete(conversationId);
-        const declineResponse = streamText({
-          model: register.languageModel(selectedModel),
-          messages: convertToModelMessages(messages),
-          system: `${PROMPT_DEFAULT}\n\nThe user declined resume generation. Respond politely and ask if they need anything else.`,
-        });
-        return declineResponse.toUIMessageStreamResponse();
-      }
-
-      try {
-        const resume = await generateResume(
-          session.jobDescription,
-          session.matches,
-          session.uploadedJobIds[0]
-        );
-        jobMatchSessions.delete(conversationId);
-        const resumeResponse = streamText({
-          model: register.languageModel(selectedModel),
-          messages: convertToModelMessages(messages),
-          system: `${PROMPT_DEFAULT}\n\nProvide the updated resume below without altering its content. Keep the introduction to one short sentence.\n\nResume:\n${resume}`,
-        });
-        return resumeResponse.toUIMessageStreamResponse();
-      } catch (resumeError) {
-        console.error('[MCP] Failed to generate resume:', resumeError);
-        const failureResponse = streamText({
-          model: register.languageModel(selectedModel),
-          messages: convertToModelMessages(messages),
-          system: `${PROMPT_DEFAULT}\n\nExplain that resume generation failed and ask the user to try again.`,
-        });
-        return failureResponse.toUIMessageStreamResponse();
-      }
-    }
-
     // Intelligently select MCP tools based on user query
     const mcpToolSelection = await selectMCPToolsForQuery(userQuery);
 
@@ -328,7 +286,7 @@ export async function POST(req: Request) {
     let knowledgeBaseContext = '';
     if (userQuery.trim()) {
       try {
-        knowledgeBaseContext = await findRelevantContent(userQuery);
+        knowledgeBaseContext = "TODO: Need to update";
       } catch (error) {
         console.warn('[CHAT] Similarity search failed:', error);
       }
@@ -441,45 +399,6 @@ export async function POST(req: Request) {
       system: systemPrompt,
       tools: {
         ...mcpTools,
-        // Keep existing tools if needed
-        addResource: tool({
-          description: `add a resource to your knowledge base.`,
-          inputSchema: z.object({
-            content: z.string().describe('the content to add'),
-          }),
-          execute: async ({ content }) => {
-            console.log('[DEBUG] addResource:', content);
-            try {
-              await createResource({ content });
-              return { success: true };
-            } catch (error) {
-              console.error('[ERROR] addResource:', error);
-              return { success: false, error: String(error) };
-            }
-          },
-        }),
-        ...(webSearch ? {
-          webSearch: tool({
-            description: `Search the web for current information.`,
-            inputSchema: z.object({
-              query: z.string().describe('search query'),
-            }),
-            execute: async ({ query }) => {
-              console.log('[DEBUG] webSearch:', query);
-              return { message: 'Web search not implemented', query };
-            },
-          }),
-        } : {}),
-        getInformation: tool({
-          description: `Search the Supabase knowledge base for relevant context when the user asks for information.`,
-          inputSchema: z.object({
-            question: z.string().describe('The user question to search for'),
-          }),
-          execute: async ({ question }) => {
-            const result = await findRelevantContent(question);
-            return result;
-          },
-        }),
       },
     });
 
