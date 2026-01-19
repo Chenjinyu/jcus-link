@@ -7,11 +7,11 @@ import { createOllama } from 'ollama-ai-provider-v2';
  * Available AI models
  */
 export const models = [
-  { id: 'openai/gpt-4.1-mini', name: 'GPT 4.1 Mini', available: false, env: 'prod' },
-  { id: 'openai/gpt-5-mini', name: 'GPT 5 Mini', available: false, env: 'prod' },
-  { id: 'openai/gpt-5-nano', name: 'GPT 5 Nano', available: true, env: 'prod' },
-  { id: 'anthropic/opus-4-20250514', name: 'Claude 4 Opus', available: false, env: 'prod' },
-  { id: 'google/gemini-2.0-flash', name: 'Gemini 2.0 Flash', available: true, env: 'prod' },
+  { id: 'openai/gpt-4.1-mini', name: 'GPT 4.1 Mini', available: false, env: 'production' },
+  { id: 'openai/gpt-5-mini', name: 'GPT 5 Mini', available: false, env: 'production' },
+  { id: 'openai/gpt-5-nano', name: 'GPT 5 Nano', available: true, env: 'production' },
+  { id: 'anthropic/opus-4-20250514', name: 'Claude 4 Opus', available: false, env: 'production' },
+  { id: 'google/gemini-2.0-flash', name: 'Gemini 2.0 Flash', available: true, env: 'production' },
   { id: 'ollama/llama3.1:8b', name: 'Ollama LLaMa3.1:8B', available: true, env: 'local' },
   { id: 'ollama/mistral:latest', name: 'Ollama Mistral', available: true, env: 'local' },
 ];
