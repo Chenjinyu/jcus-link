@@ -17,7 +17,7 @@ import {
   getAllWorkExperience,
   searchSimilarityContent,
   getMatchedResumes,
-} from '@/app/utils/mcp-client-sdk';
+} from '@/app/utils/mcp-http-client';
 import {
   resolveInputType,
   SupportedInputType,
