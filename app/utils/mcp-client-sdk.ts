@@ -16,7 +16,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 
-const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:8080/mcp';
+const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:8000/mcp';
 
 // Client instance (singleton)
 let mcpClient: any = null;
@@ -44,45 +44,19 @@ async function getMCPClient(): Promise<any> {
     }
   );
   
-  await mcpClient.connect(transport);
-  await mcpClient.initialize();
-  isInitialized = true;
-  return mcpClient;
-}
-
-
-/**
- * Generate a resume based on job description and matched profiles.
- * the resume will include matches and not matches.
- * TODO: the function needs to review, coz it has coverlay with generateMatchedResume
- */
-export async function generateResume(
-  jobDescription: string,
-  matchedResumes: any[],
-  jobId?: string
-): Promise<string> {
-  const client = await getMCPClient();
-
-  const payload: Record<string, any> = {
-    matched_resumes: matchedResumes,
-    stream: false,
-  };
-  if (jobDescription) {
-    payload.job_description = jobDescription;
-  } else if (jobId) {
-    payload.job_id = jobId;
+  try {
+    console.log('[DEBUG] getMCPClient: Connecting to MCP server...');
+    await mcpClient.connect(transport);
+    console.log('[DEBUG] getMCPClient: Connected, initializing...');
+    await mcpClient.initialize();
+    console.log('[DEBUG] getMCPClient: Initialized successfully');
+    isInitialized = true;
+    return mcpClient;
+  } catch (error) {
+    console.error('[ERROR] getMCPClient failed:', error instanceof Error ? error.message : String(error));
+    console.error('[ERROR] Full error:', error);
+    throw error;
   }
-
-  const result = await client.callTool('generate_resume', payload);
-
-  if (result.content && result.content.length > 0) {
-    const textContent = result.content.find((c: any) => c.type === 'text');
-    if (textContent) {
-      return textContent.text;
-    }
-  }
-
-  throw new Error('Invalid response from MCP server');
 }
 
 type SupportedInputType = 'pdf' | 'doc' | 'docs' | 'txt' | 'html' | 'url';
@@ -120,13 +94,29 @@ export async function generateMatchedResume(
   throw new Error('Invalid response from MCP server');
 }
 
+
+export async function getAllWorkExperience(
+  content: string
+):Promise<string>  {
+  const client = await getMCPClient();
+  const result = await client.callTool('all_work_experience');
+  if (result.content && result.content.length > 0) {
+    const textContent = result.content.find((c: any) => c.type === 'text');
+    if (textContent) {
+      return textContent.text;
+    }
+  }
+
+  throw new Error('Invalid response from MCP server');
+}
+
 export async function searchSimilarityContent(
   inputText: string,
   topK: number = 10,
   threshold: number = 0.7
 ){
   const client = await getMCPClient();
-  console.log("perparing the payload sends to mcp server.");
+  console.log("[searchSimilarityContent] perparing the payload sends to mcp server.");
   const payload = {
     input_text: inputText,
     top_k: topK,
@@ -145,9 +135,33 @@ export async function searchSimilarityContent(
   throw new Error('Invalid response from MCP server');
 }
 
-export async function searchMatchedResumes(
+export async function getMatchedResumes(
+  inputData: string,
+  inputType: string,
+  fileName: string,
+  topK: number = 10,
+  threshold: number = 0.7
 ){
-  console.log("Implemented");
+  const client = await getMCPClient();
+  console.log("[getMatchedResumes] perparing the payload sends to mcp server.");
+  const payload = {
+    input_data: inputData,
+    input_type: inputType,
+    filename: fileName,
+    top_k: topK,
+    threshold: threshold,
+  };
+
+  const result = await client.callTool('generate_matched_resume', payload);
+  
+  if (result.content && result.content.length > 0) {
+    const textContent = result.content.find((c: any) => c.type === 'text');
+    if (textContent) {
+      return textContent.text;
+    }
+  }
+
+  throw new Error('Invalid response from MCP server');
 }
 
 /**
@@ -157,68 +171,4 @@ export async function listMCPTools(): Promise<any[]> {
   const client = await getMCPClient();
   const tools = await client.listTools();
   return tools.tools || [];
-}
-
-/**
- * Intelligent tool selector - same as fetch-based version
- */
-export async function selectMCPToolsForQuery(query: string): Promise<{
-  tools: string[];
-  resources: string[];
-  prompts: string[];
-  reasoning: string;
-}> {
-  const lowerQuery = query.toLowerCase();
-  
-  const selectedTools: string[] = [];
-  const selectedResources: string[] = [];
-  const selectedPrompts: string[] = [];
-  let reasoning = '';
-
-  if (
-    lowerQuery.includes('work experience') ||
-    lowerQuery.includes('working experience') ||
-    lowerQuery.includes('background') ||
-    lowerQuery.includes('skills') ||
-    lowerQuery.includes('position') ||
-    lowerQuery.includes('role')
-  ) {
-    selectedTools.push('searchSimilarityContent');
-    reasoning += 'Detected asking author background. ';
-  }
-
-  if (
-    lowerQuery.includes('find resume') ||
-    lowerQuery.includes('match resume') ||
-    lowerQuery.includes('search resume') ||
-    lowerQuery.includes('matching candidates') ||
-    lowerQuery.includes('similar resume')
-  ) {
-    selectedTools.push('searchMatchedResumes');
-    reasoning += 'Detected resume search request. ';
-  }
-
-  if (
-    lowerQuery.includes('generate resume') ||
-    lowerQuery.includes('create resume') ||
-    lowerQuery.includes('build resume') ||
-    lowerQuery.includes('tailor resume') ||
-    lowerQuery.includes('update resume') ||
-    lowerQuery.includes('optimize resume')
-  ) {
-    selectedTools.push('generateMatchedResume');
-    selectedPrompts.push('resume_generation_prompt');
-    reasoning += 'Detected resume generation request. ';
-  }
-
-  if (selectedTools.length === 0) {
-    reasoning = 'No specific MCP tools identified for this query.';
-  }
-
-  return {
-    tools: selectedTools,
-    resources: selectedResources,
-    prompts: selectedPrompts,
-    reasoning,
-  };
 }

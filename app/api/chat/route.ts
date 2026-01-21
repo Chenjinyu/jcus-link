@@ -1,9 +1,22 @@
-import { convertToModelMessages, stepCountIs, streamText } from 'ai';
+import { 
+  convertToModelMessages, 
+  stepCountIs, 
+  streamText,
+  tool,
+  UIMessage
+} from 'ai';
+import { z } from 'zod';
 import { envConfig } from '@/app/configs/environment';
-import { register, PROMPT_DEFAULT } from '@/app/utils/ai-model-services/ModelRegistry';
+import { 
+  register, 
+  PROMPT_DEFAULT,
+  USER_BASIC_INFO,
+  RESUME_BASIC_INFO,
+} from '@/app/utils/ai-model-services/ModelRegistry';
 import {
-  generateMatchedResume,
-  selectMCPToolsForQuery,
+  getAllWorkExperience,
+  searchSimilarityContent,
+  getMatchedResumes,
 } from '@/app/utils/mcp-client-sdk';
 import {
   resolveInputType,
@@ -15,7 +28,6 @@ import {
   extractUserQuery,
   getMessageAttachments
 } from './chat-utils';
-import { buildSelectedTools } from './mcp-tool-register';
 
 console.log(`[INIT] Chat route loaded in ${envConfig.env} environment`);
 export const maxDuration = 60; // Increased for MCP operations
@@ -37,92 +49,145 @@ export async function POST(req: Request) {
     const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop();
     const userQuery = extractUserQuery(lastUserMessage);
     const attachments = lastUserMessage ? getMessageAttachments(lastUserMessage) : [];
-    const mcpToolSelection = await selectMCPToolsForQuery(userQuery);
-    const hasMcpIntent = mcpToolSelection.tools.length > 0;
     const urlFromText = extractFirstUrl(userQuery);
-    const hasSourceData = attachments.length > 0 || Boolean(urlFromText);
-    const shouldProcessMcp = hasMcpIntent && hasSourceData;
 
-    if (shouldProcessMcp) {
-      const supportedFile = attachments.find((file: any) => resolveInputType(file));
-      const resolvedUrl = !supportedFile ? urlFromText : null;
+    // Check for URL and attached files conflict
+    if (urlFromText && attachments.length > 0) {
+      return new Response(
+        JSON.stringify({
+          error: 'Cannot Determine Input Type',
+          details: 'Cannot determine whether to use the URL or attached file. Please either remove the URL from the message or remove the attachment.',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    // Check for multiple files
+    if (attachments.length > 1) {
+      return new Response(
+        JSON.stringify({
+          error: 'Cannot Support Multi-Files',
+          details: 'Only support uploading a single file. Please remove extra attachments and keep one file.',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
-      if (!supportedFile && !resolvedUrl) {
-        const missingInputResponse = streamText({
-          model: register.languageModel(selectedModel),
-          messages: convertToModelMessages(messages),
-          system: `${PROMPT_DEFAULT}\n\nAsk the user to upload a pdf/doc/docs/txt/html file or provide a URL to the job description.`,
-        });
-        return missingInputResponse.toUIMessageStreamResponse();
-      }
+    // Requirement 4 & 5: Determine inputType and prepare inputData
+    let inputType: SupportedInputType | 'file' | null = null;
+    let inputData = '';
+    let filename = '';
+    const uploadedFile = attachments.length > 0 ? attachments[0] : null;
 
-      let inputData = '';
-      const sourceFile = supportedFile || { url: resolvedUrl };
-      const inputType = resolveInputType(sourceFile);
-      if (!inputType) {
+    if (urlFromText) {
+      // URL provided in message
+      if (!isHttpUrl(urlFromText)) {
         return new Response(
           JSON.stringify({
-            error: 'Unsupported file type',
-            details: 'Supported types: pdf, doc, docs, txt, html, url.',
+            error: 'Invalid URL input',
+            details: 'Provide a valid http(s) URL.',
           }),
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
-      const filename = getFilename(sourceFile, 'job_description');
-
-      if (inputType === 'url') {
-        const url = typeof sourceFile?.url === 'string' ? sourceFile.url : '';
-        if (!url || !isHttpUrl(url)) {
-          return new Response(
-            JSON.stringify({
-              error: 'Invalid URL input',
-              details: 'Provide a valid http(s) URL for url inputs.',
-            }),
-            { status: 400, headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-        inputData = url;
-      } else {
-        const dataUrl = typeof sourceFile?.url === 'string' ? sourceFile.url : '';
-        const base64 = dataUrl ? extractBase64FromDataUrl(dataUrl) : null;
-        if (!base64) {
-          return new Response(
-            JSON.stringify({
-              error: 'Invalid file payload',
-              details: 'Expected a base64 data URL for file uploads.',
-            }),
-            { status: 400, headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-        inputData = base64;
+      inputType = 'url';
+      inputData = urlFromText;
+      filename = getFilename({ url: urlFromText });
+    } else if (uploadedFile) {
+      // File attached
+      inputType = resolveInputType(uploadedFile);
+      if (!inputType) {
+        return new Response(
+          JSON.stringify({
+            error: 'Unsupported file type',
+            details: 'Supported types: pdf, doc, docs, txt, html.',
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
       }
-
-      const mcpResult = await generateMatchedResume(
-        inputType as SupportedInputType,
-        inputData,
-        filename,
-        10,
-        0.5
-      );
-
-      const mcpResponse = streamText({
-        model: register.languageModel(selectedModel),
-        messages: convertToModelMessages(messages),
-        system: `${PROMPT_DEFAULT}\n\nThe MCP server returned the following result. Respond with it only.\n\n${mcpResult}`,
-      });
-
-      return mcpResponse.toUIMessageStreamResponse();
+      const dataUrl = typeof uploadedFile?.url === 'string' ? uploadedFile.url : '';
+      const base64 = dataUrl ? extractBase64FromDataUrl(dataUrl) : null;
+      if (!base64) {
+        return new Response(
+          JSON.stringify({
+            error: 'Invalid file payload',
+            details: 'Expected a base64 data URL for file uploads.',
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      inputData = base64;
+      filename = getFilename(uploadedFile);
     }
 
-    const result = streamText({
+    const mcpResponse = streamText({
       model: register.languageModel(selectedModel),
       messages: convertToModelMessages(messages),
-      stopWhen: stepCountIs(10),
+      stopWhen: stepCountIs(5),
       system: PROMPT_DEFAULT,
-      tools: buildSelectedTools(mcpToolSelection.tools),
+      tools: {
+        getAllWorkExperience: tool({
+          description: `${USER_BASIC_INFO}, When the user asks the job experience and the skills, 
+          use this tool without asking for confirmation, and give the user the organized response`,
+          inputSchema: z.object({
+            content: z.string().describe('The message sends from user.'),
+          }),
+          execute: async({content}) => {
+            console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience with content:', { userQuery });
+            try{
+              console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience calling searchSimilarityContent()...');
+              const result = await getAllWorkExperience(content);
+              console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience result:', result);
+              return result;
+            }catch (error) {
+              console.error('[ERROR]route.ts.POST.tool.getAllWorkExperience failed:', error);
+              return {
+                error: 'Failed to search and get all work experiences',
+                details: error instanceof Error ? error.message : String(error)
+              };
+            }
+          }
+        }),
+        searchSimilarityContent: tool({
+          description: `${USER_BASIC_INFO}. Use this tool ONLY when the user asks about work experience, skills, or certifications. Extract keywords from the user's question and search for matching content in the database. Return organized results without asking for confirmation.`,
+          inputSchema: z.object({
+            inputText: z.string().describe('Keywords or phrases from the user query about work experience, skills, or certifications'),
+          }),
+          execute: async({inputText}) => {
+            console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent with inputText:', { userQuery });
+            try{
+              console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent calling searchSimilarityContent()...');
+              const result = await searchSimilarityContent(inputText);
+              console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent result:', result);
+              return result;
+            }catch (error) {
+              console.error('[ERROR]route.ts.POST.tool.searchSimilarityContent failed:', error);
+              return {
+                error: 'Failed to search similarity content',
+                details: error instanceof Error ? error.message : String(error)
+              };
+            }
+          }
+        }),
+        getMatchedResumes: tool({
+          description: `${RESUME_BASIC_INFO}, When the user attaches a file or paste a url link in the chat window, 
+          means the user wants to get the latest resume regarding the web application auther based on the job description the user provides
+          use this tool without asking for confirmation`,
+          inputSchema: z.object({}),
+          execute: async() => {
+            console.log('[DEBUG]route.ts.POST.tool.getMatchedResumes', { userQuery, inputType, inputData: inputData.substring(0, 50) + '...' });
+            if (!inputType || !inputData) {
+              return {
+                error: 'No job description provided. Please upload a file or provide a URL.'
+              };
+            }
+            const result = await getMatchedResumes(inputData, inputType as SupportedInputType, filename);
+            return result;
+          }
+        }),
+      }
     });
+    return mcpResponse.toUIMessageStreamResponse();
 
-    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error('[ERROR] POST /api/chat:', error);
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';

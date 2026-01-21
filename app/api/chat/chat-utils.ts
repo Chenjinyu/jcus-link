@@ -127,6 +127,7 @@ export const extractUserQuery = (message: any): string => {
   return '';
 };
 
+
 export const getMessageAttachments = (message: any): any[] => {
   const files = Array.isArray(message?.files) ? message.files : [];
   const experimental = Array.isArray(message?.experimental_attachments)
@@ -152,30 +153,20 @@ export const parseDataUrlMimeType = (dataUrl: string): string | null => {
   return mimeType || null;
 };
 
-export const resolveInputType = (file: any): SupportedInputType | null => {
+export const resolveInputType = (file: any): SupportedInputType | 'file' | null => {
   const url = typeof file?.url === 'string' ? file.url : '';
+  
+  // Check if it's a URL
   if (url && isHttpUrl(url)) {
     return 'url';
   }
-
+  
+  // Check if it has a filename (indicating a file)
   const filename = file?.filename || file?.name || '';
-  const extension = filename ? getFileExtension(filename) : null;
-  if (extension && EXTENSION_MAP[extension]) {
-    return EXTENSION_MAP[extension];
+  if (filename) {
+    return 'file';
   }
-
-  const mediaType = file?.mediaType || file?.mimeType || file?.contentType || file?.type || '';
-  if (mediaType && MIME_TYPE_MAP[mediaType]) {
-    return MIME_TYPE_MAP[mediaType];
-  }
-
-  if (url && url.startsWith('data:')) {
-    const dataUrlMime = parseDataUrlMimeType(url);
-    if (dataUrlMime && MIME_TYPE_MAP[dataUrlMime]) {
-      return MIME_TYPE_MAP[dataUrlMime];
-    }
-  }
-
+  
   return null;
 };
 
@@ -193,7 +184,7 @@ export const extractBase64FromDataUrl = (dataUrl: string): string | null => {
   return data;
 };
 
-export const getFilename = (file: any, fallback: string): string => {
+export const getFilename = (file: any): string => {
   if (typeof file?.filename === 'string' && file.filename.trim()) {
     return file.filename.trim();
   }
@@ -208,5 +199,5 @@ export const getFilename = (file: any, fallback: string): string => {
       return derived;
     }
   }
-  return fallback;
+  return '';
 };

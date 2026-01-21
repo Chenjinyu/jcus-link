@@ -70,7 +70,10 @@ export const register = createDynamicRegistery();
 
 export let PROMPT_DEFAULT = `You are a helpful assistant. Check your knowledge base before answering any questions.
 The conversation has to flow into the questions about the web application author, if the client user ask questions are not related to the web application author, then respond: "Do you have any questions about the JC?" otherwise, respond questions using information from tool calls.
-if no relevant information is found in the tool calls, respond, "Sorry, I don't know. There is no relevant infomration in my knowledge base."`
+if no relevant information is found in the tool calls, respond, "Sorry, I don't know. There is no relevant infomration in my knowledge base."`;
 
-export let PROMPT_NEW = `You are a helpful assistant. Check your knowledge base before answering any questions`
+export const PROMPT_NEW = `You are a helpful assistant, help to answer the questions of the users have.  
+Check your knowledge base with supabase database before answering any questions\n`;
 
+export const USER_BASIC_INFO = `${PROMPT_NEW} I am 15 year experiences as software engineer, and an Asian-American citizen`;
+export const RESUME_BASIC_INFO = `${USER_BASIC_INFO}, My experience and skills have been stored into supabase vector database, based on the user provided the resume info to query the supabase database and get the releated information back.`;
