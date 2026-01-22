@@ -15,7 +15,7 @@ import {
 } from '@/app/utils/ai-model-services/ModelRegistry';
 import {
   getAllWorkExperience,
-  searchSimilarityContent,
+  searchSimilarContent,
   getMatchedResumes,
 } from '@/app/utils/mcp-http-client';
 import {
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
           execute: async({content}) => {
             console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience with content:', { userQuery });
             try{
-              console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience calling searchSimilarityContent()...');
+              console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience calling searchSimilarContent()...');
               const result = await getAllWorkExperience(content);
               console.log('[DEBUG]route.ts.POST.tool.getAllWorkExperience result:', result);
               return result;
@@ -147,20 +147,20 @@ export async function POST(req: Request) {
             }
           }
         }),
-        searchSimilarityContent: tool({
+        searchSimilarContent: tool({
           description: `${USER_BASIC_INFO}. Use this tool ONLY when the user asks about work experience, skills, or certifications. Extract keywords from the user's question and search for matching content in the database. Return organized results without asking for confirmation.`,
           inputSchema: z.object({
             inputText: z.string().describe('Keywords or phrases from the user query about work experience, skills, or certifications'),
           }),
           execute: async({inputText}) => {
-            console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent with inputText:', { userQuery });
+            console.log('[DEBUG]route.ts.POST.tool.searchSimilarContent with inputText:', { userQuery });
             try{
-              console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent calling searchSimilarityContent()...');
-              const result = await searchSimilarityContent(inputText);
-              console.log('[DEBUG]route.ts.POST.tool.searchSimilarityContent result:', result);
+              console.log('[DEBUG]route.ts.POST.tool.searchSimilarContent calling searchSimilarContent()...');
+              const result = await searchSimilarContent(inputText);
+              console.log('[DEBUG]route.ts.POST.tool.searchSimilarContent result:', result);
               return result;
             }catch (error) {
-              console.error('[ERROR]route.ts.POST.tool.searchSimilarityContent failed:', error);
+              console.error('[ERROR]route.ts.POST.tool.searchSimilarContent failed:', error);
               return {
                 error: 'Failed to search similarity content',
                 details: error instanceof Error ? error.message : String(error)

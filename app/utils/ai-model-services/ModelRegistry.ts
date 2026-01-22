@@ -3,6 +3,8 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOllama } from 'ollama-ai-provider-v2';
+import { envConfig } from '@/app/configs/environment';
+
 /**
  * Available AI models
  */
@@ -11,7 +13,7 @@ export const models = [
   { id: 'openai/gpt-5-mini', name: 'GPT 5 Mini', available: false, env: 'production' },
   { id: 'openai/gpt-5-nano', name: 'GPT 5 Nano', available: true, env: 'production' },
   { id: 'anthropic/opus-4-20250514', name: 'Claude 4 Opus', available: false, env: 'production' },
-  { id: 'google/gemini-2.0-flash', name: 'Gemini 2.0 Flash', available: true, env: 'production' },
+  { id: 'google/gemini-2.0-flash', name: 'Gemini 2.0 Flash', available: true, env: '' },
   { id: 'ollama/llama3.1:8b', name: 'Ollama LLaMa3.1:8B', available: true, env: 'local' },
   { id: 'ollama/mistral:latest', name: 'Ollama Mistral', available: true, env: 'local' },
 ];
@@ -20,7 +22,11 @@ export const models = [
  * Get only available models
  */
 export const getAvailableModels = () => {
-  return models.filter(model => model.available === true && model.env === 'production');
+  return models.filter(
+    model =>
+      model.available === true &&
+      (model.env === '' || model.env === envConfig.env)
+  );
 };
 
 /**

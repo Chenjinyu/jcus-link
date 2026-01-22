@@ -18,11 +18,11 @@ async function callMCPTool(toolName: string, arguments_: Record<string, any>) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
+        'Accept': 'application/json',
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
-        id: Math.random(),
+        id: Date.now(), // or crypto.randomUUID()
         method: 'tools/call',
         params: {
           name: toolName,
@@ -35,6 +35,7 @@ async function callMCPTool(toolName: string, arguments_: Record<string, any>) {
       throw new Error(`MCP server error: ${response.status} ${response.statusText}`);
     }
 
+    console.log(`[DEBUG] MCP tool response:`, response);
     const data = await response.json();
     console.log(`[DEBUG] MCP tool result:`, data);
 
@@ -43,6 +44,7 @@ async function callMCPTool(toolName: string, arguments_: Record<string, any>) {
     }
 
     return data.result;
+    
   } catch (error) {
     console.error(`[ERROR] MCP tool call failed:`, error);
     throw error;
@@ -80,13 +82,13 @@ export async function getAllWorkExperience(content: string): Promise<string> {
 /**
  * Search for matching content by similarity.
  */
-export async function searchSimilarityContent(
-  inputText: string,
+export async function searchSimilarContent(
+  inputData: string,
   topK: number = 10,
-  threshold: number = 0.7
+  threshold: number = 0.5
 ): Promise<string> {
-  return callMCPTool('search_similarity_content', {
-    input_text: inputText,
+  return callMCPTool('search_similar_content', {
+    input_text: inputData,
     top_k: topK,
     threshold: threshold,
   });
@@ -100,7 +102,7 @@ export async function getMatchedResumes(
   inputType: string,
   fileName: string,
   topK: number = 10,
-  threshold: number = 0.7
+  threshold: number = 0.5
 ): Promise<string> {
   return callMCPTool('generate_matched_resume', {
     input_type: inputType,

@@ -37,9 +37,17 @@ export const StyledMessage = ({
   // const isDark = isDarkTheme(theme);
   // message.role = 'assistant';
   const isUser = message.role === 'user';
+  const normalizeText = (value: string) =>
+    value
+      .replace(JOB_MATCH_PROMPT_TOKEN, '')
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/^\n+|\n+$/g, '');
   const textContent = message.parts
     .filter(part => part.type === 'text')
-    .map(part => (part.text || '').replace(JOB_MATCH_PROMPT_TOKEN, '').trim())
+    .map(part => normalizeText(part.text || ''))
     .filter(Boolean)
     .join('\n');
   
@@ -101,9 +109,7 @@ export const StyledMessage = ({
                 switch (part.type) {
                   case 'text':
                     {
-                      const cleanedText = (part.text || '')
-                        .replace(JOB_MATCH_PROMPT_TOKEN, '')
-                        .trim();
+                      const cleanedText = normalizeText(part.text || '');
                       if (!cleanedText) {
                         return null;
                       }
