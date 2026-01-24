@@ -37,7 +37,7 @@ async function callMCPTool(toolName: string, arguments_: Record<string, any>) {
 
     console.log(`[DEBUG] MCP tool response:`, response);
     const data = await response.json();
-    console.log(`[DEBUG] MCP tool result:`, data);
+    console.log(`searchSimilarContent`, data);
 
     if (data.error) {
       throw new Error(`MCP error: ${data.error.message}`);
