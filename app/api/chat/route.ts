@@ -37,6 +37,14 @@ export async function POST(req: Request) {
     console.log(`[CHAT] POST /api/chat called in ${envConfig.env} environment`);
   }
 
+  const formatStreamError = (error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/mcp|ECONNREFUSED|fetch/i.test(message)) {
+      return 'The MCP service is unavailable right now. Please try again later.';
+    }
+    return 'Something went wrong while generating a response. Please try again.';
+  };
+
   try {
     const body = await req.json();
     const messages = body.messages || [];
@@ -104,7 +112,10 @@ export async function POST(req: Request) {
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
-      const dataUrl = typeof uploadedFile?.url === 'string' ? uploadedFile.url : '';
+      const dataUrl = 
+        typeof uploadedFile?.url === 'string' // runtime check, dataUrl only can be string. like isinstance() type check
+        ? uploadedFile.url 
+        : '';
       const base64 = dataUrl ? extractBase64FromDataUrl(dataUrl) : null;
       if (!base64) {
         return new Response(
@@ -140,10 +151,7 @@ export async function POST(req: Request) {
               return result;
             }catch (error) {
               console.error('[ERROR]route.ts.POST.tool.getAllWorkExperience failed:', error);
-              return {
-                error: 'Failed to search and get all work experiences',
-                details: error instanceof Error ? error.message : String(error)
-              };
+              throw new Error(`MCP unavailable: ${error instanceof Error ? error.message : String(error)}`);
             }
           }
         }),
@@ -161,10 +169,7 @@ export async function POST(req: Request) {
               return result;
             }catch (error) {
               console.error('[ERROR]route.ts.POST.tool.searchSimilarContent failed:', error);
-              return {
-                error: 'Failed to search similarity content',
-                details: error instanceof Error ? error.message : String(error)
-              };
+              throw new Error(`MCP unavailable: ${error instanceof Error ? error.message : String(error)}`);
             }
           }
         }),
@@ -180,13 +185,20 @@ export async function POST(req: Request) {
                 error: 'No job description provided. Please upload a file or provide a URL.'
               };
             }
-            const result = await getMatchedResumes(inputData, inputType as SupportedInputType, filename);
-            return result;
+            try {
+              const result = await getMatchedResumes(inputData, inputType as SupportedInputType, filename);
+              return result;
+            } catch (error) {
+              console.error('[ERROR]route.ts.POST.tool.getMatchedResumes failed:', error);
+              throw new Error(`MCP unavailable: ${error instanceof Error ? error.message : String(error)}`);
+            }
           }
         }),
       }
     });
-    return mcpResponse.toUIMessageStreamResponse();
+    return mcpResponse.toUIMessageStreamResponse({
+      onError: formatStreamError,
+    });
 
   } catch (error) {
     console.error('[ERROR] POST /api/chat:', error);
