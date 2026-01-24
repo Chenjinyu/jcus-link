@@ -199,7 +199,6 @@ export async function POST(req: Request) {
     return mcpResponse.toUIMessageStreamResponse({
       onError: formatStreamError,
     });
-
   } catch (error) {
     console.error('[ERROR] POST /api/chat:', error);
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
