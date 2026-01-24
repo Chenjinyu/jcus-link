@@ -2,9 +2,8 @@ export type Environment = 'local' | 'production'; //| 'development' | 'qa' |
 
 export interface EnvironmentConfig {
   env: Environment;
-  isDevelopment: boolean;
-  isProduction: boolean;
   apiUrl: string;
+  mcpServerUrl: string;
   defaultModel: string;
   enableLocalOllama: boolean;
   debugMode: boolean;
@@ -30,18 +29,16 @@ function getCurrentEnvironment(): Environment {
 const environmentConfigs: Record<Environment, EnvironmentConfig> = {
   local: {
     env: 'local',
-    isDevelopment: true,
-    isProduction: false,
     apiUrl: 'http://localhost:3000',
+    mcpServerUrl: 'http://localhost:8000/mcp',
     defaultModel: 'ollama/llama3.1:8b', // Use local Ollama for local testing
     enableLocalOllama: true,
     debugMode: true,
   },
   production: {
     env: 'production',
-    isDevelopment: false,
-    isProduction: true,
-    apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://jcus.link',
+    apiUrl: 'https://jcus.link',
+    mcpServerUrl: 'https://jcus-link-rest.onrender.com/mcp',
     defaultModel: 'google/gemini-2.0-flash',
     enableLocalOllama: false,
     debugMode: false,
@@ -59,6 +56,7 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     console.log(`[Environment] Current environment: ${environment}`);
     console.log(`[Environment] Config:`, {
       apiUrl: config.apiUrl,
+      mcpServerUrl: config.mcpServerUrl,
       defaultModel: config.defaultModel,
       enableLocalOllama: config.enableLocalOllama,
     });

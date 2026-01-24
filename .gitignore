@@ -143,6 +143,7 @@ env.bak/
 venv.bak/
 .next/
 .env.local
+.env.prod
 .env.*.local
 
 # Spyder project settings

@@ -5,7 +5,9 @@
  * No persistent connection or initialization needed - each call is independent.
  */
 
-const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:8000/mcp';
+import { envConfig } from '@/app/configs/environment';
+
+const MCP_SERVER_URL = envConfig.mcpServerUrl;
 type SupportedInputType = 'url' | 'file';
 
 /**
