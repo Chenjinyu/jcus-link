@@ -24,7 +24,7 @@
     "@ai-sdk/openai": "^2.0.65",
     "@ai-sdk/react": "^2.0.93",
     "@assistant-ui/react": "^0.11.47",
-    "@modelcontextprotocol/sdk": "^1.25.1",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
