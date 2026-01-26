@@ -66,12 +66,12 @@ export const StyledMessage = ({
     // padding: '12px 16px',
     wordWrap: 'break-word',
     overflowWrap: 'break-word',
-    whiteSpace: 'pre-wrap', // Preserves line breaks
+    //whiteSpace: 'pre-wrap', // Preserves line breaks
   };
 
 
   return (
-    <div className={`group flex gap-3 ${isUser ? 'flex-row-reverse' : ''} py-4  w-full`}>
+    <div className={`group flex gap-3 ${isUser ? 'flex-row-reverse' : ''} w-full`}>
       {/* Avatar */}
       <Avatar 
         role={message.role} 
@@ -103,7 +103,7 @@ export const StyledMessage = ({
           >
             <MessageContent
               className="!bg-transparent [&>*]:!bg-transparent"
-              style={{ backgroundColor: 'transparent' }}
+              style={{ backgroundColor: 'transparent', whiteSpace: 'normal' }}
             >
               {message.parts.map((part, i) => {
                 switch (part.type) {

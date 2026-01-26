@@ -74,3 +74,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Streamdown list formatting inside chat messages */
+.message-content ul[data-streamdown="unordered-list"] li:has(> ul[data-streamdown="unordered-list"]) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.message-content ul[data-streamdown="unordered-list"] li:has(> ul[data-streamdown="unordered-list"]) > p:first-child {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.message-content ul[data-streamdown="unordered-list"] li:has(> ul[data-streamdown="unordered-list"]) > ul[data-streamdown="unordered-list"] {
+  margin-top: 0.25rem;
+  padding-left: 1.25rem;
+}
